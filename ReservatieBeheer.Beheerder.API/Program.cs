@@ -18,10 +18,6 @@ namespace ReservatieBeheer.Beheerder.API
             ctx.Database.EnsureDeleted();
             ctx.Database.EnsureCreated();
 
-            RestaurantRepo rRepo = new RestaurantRepo(connectionString);
-
-            rRepo.VoegTafelToe(new TafelEF(5, 4));
-
             // Add services to the container.
 
             builder.Services.AddControllers();

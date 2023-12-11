@@ -24,12 +24,11 @@ namespace ReservatieBeheer.DL.Repositories
         }
 
 
-        public void VoegTafelToe(TafelEF tafel)
+        public void VoegTafelToe(Tafel tafel)
         {
             try
             {
-                //_context.Tafels.Add(TafelMapper.MapToEfEntity(tafel));
-                _context.Tafels.Add(tafel);
+                _context.Tafels.Add(TafelMapper.MapToEfEntity(tafel));
                 _context.SaveChanges();
             }
             catch

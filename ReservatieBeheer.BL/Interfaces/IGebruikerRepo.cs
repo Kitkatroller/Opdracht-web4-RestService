@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReservatieBeheer.BL.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace ReservatieBeheer.BL.Interfaces
 {
     public interface IGebruikerRepo
     {
+        public void VoegGebruikerToe(Klant klant);
     }
 }
