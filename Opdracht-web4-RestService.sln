@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReservatieBeheer.Beheerder.API", "ReservatieBeheer.Beheerder.API\ReservatieBeheer.Beheerder.API.csproj", "{D3ADB3AF-533C-4918-9EB0-6C60DB294C07}"
+	ProjectSection(ProjectDependencies) = postProject
+		{229C4AFC-7799-4800-803A-7F5602E1BB4E} = {229C4AFC-7799-4800-803A-7F5602E1BB4E}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReservatieBeheer.BL", "ReservatieBeheer.BL\ReservatieBeheer.BL.csproj", "{3FC422E1-864A-4608-BD0B-07B917FA8B42}"
 EndProject

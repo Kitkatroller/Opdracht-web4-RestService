@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ReservatieBeheer.BL\ReservatieBeheer.BL.csproj" />
+    <ProjectReference Include="..\ReservatieBeheer.DL\ReservatieBeheer.DL.csproj" />
   </ItemGroup>
 
 </Project>

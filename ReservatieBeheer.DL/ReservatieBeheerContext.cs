@@ -15,6 +15,11 @@ namespace ReservatieBeheer.DL
             : base(options)
         {
         }
+        public ReservatieBeheerContext(string connectionString) : base(new DbContextOptionsBuilder<ReservatieBeheerContext>()
+           .UseSqlServer(connectionString)
+           .Options)
+        {
+        }
 
         public DbSet<TafelEF> Tafels { get; set; }
         public DbSet<ReservatieEF> Reservaties { get; set; }
@@ -25,19 +30,22 @@ namespace ReservatieBeheer.DL
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ReservatieEF>()
-                .HasOne(res => res.Tafel)
-                .WithMany()
-                .HasForeignKey(res => res.TafelNummer);
+               .HasOne(res => res.Tafel)
+               .WithMany()
+               .HasForeignKey(res => res.TafelNummer)
+               .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ReservatieEF>()
-                .HasOne(res => res.ContactPersoon)
+                .HasOne(res => res.Klant)
                 .WithMany(klant => klant.Reservaties)
-                .HasForeignKey(res => res.KlantID);
+                .HasForeignKey(res => res.KlantID)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ReservatieEF>()
                 .HasOne(res => res.Restaurant)
                 .WithMany(restaurant => restaurant.Reservaties)
-                .HasForeignKey(res => res.RestaurantID);
+                .HasForeignKey(res => res.RestaurantID)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<KlantEF>()
                 .HasOne(k => k.Locatie)

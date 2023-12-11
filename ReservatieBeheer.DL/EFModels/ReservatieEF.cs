@@ -23,7 +23,7 @@ namespace ReservatieBeheer.DL.EFModels
 
         public int KlantID { get; set; }
         [ForeignKey("KlantID")]
-        public KlantEF ContactPersoon { get; set; }
+        public KlantEF Klant { get; set; }
 
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Aantal plaatsen moet minstens 1 zijn")]

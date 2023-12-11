@@ -1,4 +1,6 @@
 
+using ReservatieBeheer.DL;
+
 namespace ReservatieBeheer.Beheerder.API
 {
     public class Program
@@ -6,6 +8,12 @@ namespace ReservatieBeheer.Beheerder.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            string connectionString = @"Data Source=RAZER-LAPTOP-EP\SQLEXPRESS;Initial Catalog=ReservatieBeheer;Integrated Security=True;TrustServerCertificate=True";
+
+            ReservatieBeheerContext ctx = new ReservatieBeheerContext(connectionString);
+            ctx.Database.EnsureDeleted();
+            ctx.Database.EnsureCreated();
 
             // Add services to the container.
 
