@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ReservatieBeheer.BL.Models
 {
-    internal class Klant
+    public class Klant
     {
     }
 }
