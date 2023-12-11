@@ -20,7 +20,6 @@ namespace ReservatieBeheer.BL.Services
             string telefoonNummer,
             Locatie locatie,
             ICollection<Reservatie> reservaties)
-
         {
             _gebruikerRepo.VoegGebruikerToe(new Klant(naam, email, telefoonNummer, locatie, reservaties));
         }
