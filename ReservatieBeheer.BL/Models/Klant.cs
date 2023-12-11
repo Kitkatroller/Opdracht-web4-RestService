@@ -18,9 +18,18 @@ namespace ReservatieBeheer.BL.Models
 
         public string TelefoonNummer { get; set; }
 
-        public int LocatieID { get; set; }
         public Locatie Locatie { get; set; }
 
         public ICollection<Reservatie> Reservaties { get; set; }
+
+        //Constructors
+        public Klant(string naam, string email, string telefoonNummer, Locatie locatie, ICollection<Reservatie> reservaties)
+        {
+            Naam = naam;
+            Email = email;
+            TelefoonNummer = telefoonNummer;
+            Locatie = locatie;
+            Reservaties = reservaties;
+        }
     }
 }

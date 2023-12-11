@@ -16,5 +16,11 @@ namespace ReservatieBeheer.DL.EFModels
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Aantal plaatsen moet minstens 1 zijn")]
         public int Aantal { get; set; }
+
+        //Constructor
+        public TafelEF(int tafelNummer, int aantal)
+        { 
+            Aantal = aantal;
+        }
     }
 }

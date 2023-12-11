@@ -13,5 +13,12 @@ namespace ReservatieBeheer.BL.Models
         public int TafelNummer { get; set; }
         
         public int Aantal { get; set; }
+
+        //Constructors
+        public Tafel(int tafelNummer, int aantal)
+        {
+            TafelNummer = tafelNummer;
+            Aantal = aantal;
+        }
     }
 }

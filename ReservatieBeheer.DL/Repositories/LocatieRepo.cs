@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ReservatieBeheer.DL.Repositories
 {
-    internal class LocatieRepo : ILocatieRepo
+    public class LocatieRepo : ILocatieRepo
     {
     }
 }

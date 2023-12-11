@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace ReservatieBeheer.DL.EFModels
 {
@@ -31,5 +32,17 @@ namespace ReservatieBeheer.DL.EFModels
         public LocatieEF Locatie { get; set; }
 
         public ICollection<ReservatieEF> Reservaties { get; set; }
+
+        //Constructors
+        public KlantEF() { }
+
+        public KlantEF(string naam, string email, string telefoonNummer, LocatieEF locatie, ICollection<ReservatieEF> reservaties) 
+        {
+            Naam = naam;
+            Email = email;
+            TelefoonNummer = telefoonNummer;
+            Locatie = locatie;
+            Reservaties = reservaties;
+        }
     }
 }

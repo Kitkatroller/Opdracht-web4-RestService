@@ -1,5 +1,7 @@
 
 using ReservatieBeheer.DL;
+using ReservatieBeheer.DL.EFModels;
+using ReservatieBeheer.DL.Repositories;
 
 namespace ReservatieBeheer.Beheerder.API
 {
@@ -11,9 +13,14 @@ namespace ReservatieBeheer.Beheerder.API
 
             string connectionString = @"Data Source=RAZER-LAPTOP-EP\SQLEXPRESS;Initial Catalog=ReservatieBeheer;Integrated Security=True;TrustServerCertificate=True";
 
+            //Database opzetten
             ReservatieBeheerContext ctx = new ReservatieBeheerContext(connectionString);
             ctx.Database.EnsureDeleted();
             ctx.Database.EnsureCreated();
+
+            RestaurantRepo rRepo = new RestaurantRepo(connectionString);
+
+            rRepo.VoegTafelToe(new TafelEF(5, 4));
 
             // Add services to the container.
 
