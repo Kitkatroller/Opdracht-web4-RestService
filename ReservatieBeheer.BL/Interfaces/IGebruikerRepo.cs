@@ -10,5 +10,8 @@ namespace ReservatieBeheer.BL.Interfaces
     public interface IGebruikerRepo
     {
         public void VoegGebruikerToe(Klant klant);
+        Klant GetKlantById(int klantenNummer);
+        void UpdateKlant(Klant klant);
+        void UitschrijvenGebruiker(int klantenNummer);
     }
 }

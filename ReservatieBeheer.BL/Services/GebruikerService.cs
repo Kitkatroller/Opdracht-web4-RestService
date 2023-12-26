@@ -1,27 +1,54 @@
 ﻿using ReservatieBeheer.BL.Interfaces;
 using ReservatieBeheer.BL.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ReservatieBeheer.BL.Services
 {
     public class GebruikerService
     {
-        IGebruikerRepo _gebruikerRepo;
-        string Connectionstring;
+        private readonly IGebruikerRepo _gebruikerRepo;
 
-        public GebruikerService(string connectionstring) { Connectionstring = connectionstring; }
-
-        public void GebruikerRegistreren(string naam,
-            string email,
-            string telefoonNummer,
-            Locatie locatie,
-            ICollection<Reservatie> reservaties)
+        // Constructor met IGebruikerRepo injectie
+        public GebruikerService(IGebruikerRepo gebruikerRepo)
         {
-            _gebruikerRepo.VoegGebruikerToe(new Klant(naam, email, telefoonNummer, locatie, reservaties));
+            _gebruikerRepo = gebruikerRepo;
         }
+
+        public void GebruikerRegistreren(string naam, string email, string telefoonNummer, Locatie locatie)
+        {
+            var klant = new Klant
+            {
+                Naam = naam,
+                Email = email,
+                TelefoonNummer = telefoonNummer,
+                Locatie = locatie
+            };
+
+            _gebruikerRepo.VoegGebruikerToe(klant);
+        }
+        public void UpdateGebruiker(int klantenNummer, string naam, string email, string telefoonNummer, Locatie locatie)
+        {
+            var klant = _gebruikerRepo.GetKlantById(klantenNummer);
+            if (klant == null)
+            {
+                throw new KeyNotFoundException("Klant niet gevonden");
+            }
+
+            klant.Naam = naam;
+            klant.Email = email;
+            klant.TelefoonNummer = telefoonNummer;
+            klant.Locatie = locatie;
+
+            _gebruikerRepo.UpdateKlant(klant);
+        }
+        public void UitschrijvenGebruiker(int klantenNummer)
+        {
+            if (_gebruikerRepo.GetKlantById(klantenNummer) == null)
+            {
+                throw new KeyNotFoundException("Klant niet gevonden");
+            }
+            else { _gebruikerRepo.UitschrijvenGebruiker(klantenNummer); }
+            
+        }
+
     }
 }

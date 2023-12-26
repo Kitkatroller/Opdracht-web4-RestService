@@ -14,17 +14,29 @@ namespace ReservatieBeheer.DL.Mappers
         {
             if (efLocatieEntry == null) return null;
 
-
-
-            return new Locatie();
+            return new Locatie
+            {
+                ID = efLocatieEntry.ID,
+                Postcode = efLocatieEntry.Postcode,
+                Gemeente = efLocatieEntry.Gemeente,
+                Straatnaam = efLocatieEntry.Straatnaam,
+                Huisnummerlabel = efLocatieEntry.Huisnummerlabel
+            };
         }
 
         public static LocatieEF MapToEfEntity(Locatie LocatieEntry)
         {
             if (LocatieEntry == null) return null;
 
-
-            return new LocatieEF();
+            return new LocatieEF
+            {
+                ID = LocatieEntry.ID, // Als ID auto-increment is, mag je deze weggelaten tijdens insert operaties.
+                Postcode = LocatieEntry.Postcode,
+                Gemeente = LocatieEntry.Gemeente,
+                Straatnaam = LocatieEntry.Straatnaam,
+                Huisnummerlabel = LocatieEntry.Huisnummerlabel
+            };
         }
     }
+
 }

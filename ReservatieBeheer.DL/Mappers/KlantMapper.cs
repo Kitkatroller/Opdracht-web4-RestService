@@ -15,37 +15,47 @@ namespace ReservatieBeheer.DL.Mappers
         {
             if (efKlantEntry == null) return null;
 
-            ICollection<Reservatie> reservaties = null;
-
-            foreach (var item in efKlantEntry.Reservaties)
+            var klant = new Klant
             {
-                reservaties.Add(ReservatieMapper.MapToBLModel(item));
+                Naam = efKlantEntry.Naam,
+                Email = efKlantEntry.Email,
+                TelefoonNummer = efKlantEntry.TelefoonNummer,
+                Locatie = LocatieMapper.MapToBLModel(efKlantEntry.Locatie),
+                Reservaties = new List<Reservatie>()
+            };
+
+            if (efKlantEntry.Reservaties != null)
+            {
+                foreach (var item in efKlantEntry.Reservaties)
+                {
+                    klant.Reservaties.Add(ReservatieMapper.MapToBLModel(item));
+                }
             }
+            
 
-
-            return new Klant(efKlantEntry.Naam,
-                efKlantEntry.Email,
-                efKlantEntry.TelefoonNummer,
-                LocatieMapper.MapToBLModel( efKlantEntry.Locatie),
-                reservaties);
+            return klant;
         }
 
-        public static KlantEF MapToEfEntity(Klant KlantEntry)
+        public static KlantEF MapToEfEntity(Klant klantEntry)
         {
-            if (KlantEntry == null) return null;
+            if (klantEntry == null) return null;
 
-            ICollection<ReservatieEF> reservaties = null;
-
-            foreach (var item in KlantEntry.Reservaties)
+            var klantEF = new KlantEF
             {
-                reservaties.Add(ReservatieMapper.MapToEfEntity(item));
+                Naam = klantEntry.Naam,
+                Email = klantEntry.Email,
+                TelefoonNummer = klantEntry.TelefoonNummer,
+                Locatie = LocatieMapper.MapToEfEntity(klantEntry.Locatie),
+                Reservaties = new List<ReservatieEF>()
+            };
+
+            foreach (var item in klantEntry.Reservaties)
+            {
+                klantEF.Reservaties.Add(ReservatieMapper.MapToEfEntity(item));
             }
 
-            return new KlantEF(KlantEntry.Naam,
-                 KlantEntry.Email,
-                 KlantEntry.TelefoonNummer,
-                 LocatieMapper.MapToEfEntity(KlantEntry.Locatie),
-                 reservaties);
+            return klantEF;
         }
     }
+
 }

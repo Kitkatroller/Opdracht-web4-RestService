@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ReservatieBeheer.BL.Interfaces;
 using ReservatieBeheer.BL.Models;
+using ReservatieBeheer.DL.EFModels;
 using ReservatieBeheer.DL.Mappers;
 using System;
 using System.Collections.Generic;
@@ -14,24 +15,53 @@ namespace ReservatieBeheer.DL.Repositories
     {
         private readonly ReservatieBeheerContext _context;
 
-        public GebruikerRepo(string connectionString)
+        // Constructor met dependency injection voor de DbContext
+        public GebruikerRepo(ReservatieBeheerContext context)
         {
-            var options = new DbContextOptionsBuilder<ReservatieBeheerContext>()
-                              .UseSqlServer(connectionString)
-                              .Options;
-            _context = new ReservatieBeheerContext(options);
+            _context = context;
         }
 
         public void VoegGebruikerToe(Klant klant)
         {
             try
             {
-                _context.Klanten.Add(KlantMapper.MapToEfEntity(klant));
+                KlantEF efKlant = KlantMapper.MapToEfEntity(klant);
+                _context.Locaties.Add(efKlant.Locatie);
+                _context.SaveChanges();
+
+                // Update de locatie ID op de klant
+                efKlant.LocatieID = klant.Locatie.ID;
+
+                _context.Klanten.Add(efKlant);
                 _context.SaveChanges();
             }
-            catch
+            catch (Exception ex)
             {
-                throw new Exception("Geef huis");
+                // Overweeg een specifiekere foutafhandeling of log de fout
+                throw new Exception("Fout bij het toevoegen van de gebruiker: " + ex.Message);
+            }
+        }
+
+        public Klant GetKlantById(int klantenNummer)
+        {
+            // Zoek de klant op basis van ID
+            return KlantMapper.MapToBLModel(_context.Klanten.FirstOrDefault(k => k.KlantenNummer == klantenNummer && !k.IsUitgeschreven));
+        }
+
+        public void UpdateKlant(Klant klant)
+        {
+            // Update de klant in de context
+            _context.Klanten.Update(KlantMapper.MapToEfEntity(klant));
+            _context.SaveChanges();
+        }
+
+        public void UitschrijvenGebruiker(int klantenNummer)
+        {
+            var klant = _context.Klanten.Find(klantenNummer);
+            if (klant != null)
+            {
+                klant.IsUitgeschreven = true;
+                _context.SaveChanges();
             }
         }
     }

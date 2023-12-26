@@ -1,7 +1,11 @@
-
-using ReservatieBeheer.DL;
-using ReservatieBeheer.DL.EFModels;
+using Microsoft.EntityFrameworkCore;
+using ReservatieBeheer.BL.Interfaces;
 using ReservatieBeheer.DL.Repositories;
+using ReservatieBeheer.DL;
+using Microsoft.OpenApi.Models;
+using ReservatieBeheer.BL.Models;
+using ReservatieBeheer.BL.Services;
+
 
 namespace ReservatieBeheer.Beheerder.API
 {
@@ -11,17 +15,15 @@ namespace ReservatieBeheer.Beheerder.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            string connectionString = @"Data Source=RAZER-LAPTOP-EP\SQLEXPRESS;Initial Catalog=ReservatieBeheer;Integrated Security=True;TrustServerCertificate=True";
-
-            //Database opzetten
-            ReservatieBeheerContext ctx = new ReservatieBeheerContext(connectionString);
-            ctx.Database.EnsureDeleted();
-            ctx.Database.EnsureCreated();
-
             // Add services to the container.
+            builder.Services.AddDbContext<ReservatieBeheerContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("ReservatieBeheerDatabase")));
+
+            builder.Services.AddScoped<IRestaurantRepo, RestaurantRepo>();
+            builder.Services.AddScoped<RestaurantService>();
+
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -32,15 +34,20 @@ namespace ReservatieBeheer.Beheerder.API
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+
+                //// Ensure the database is deleted and created
+                //using (var scope = app.Services.CreateScope())
+                //{
+                //    var services = scope.ServiceProvider;
+                //    var dbContext = services.GetRequiredService<ReservatieBeheerContext>();
+                //    dbContext.Database.EnsureDeleted();
+                //    dbContext.Database.EnsureCreated();
+                //}
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
-
             app.MapControllers();
-
             app.Run();
         }
     }

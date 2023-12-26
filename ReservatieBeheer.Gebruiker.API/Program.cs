@@ -1,3 +1,10 @@
+using Microsoft.EntityFrameworkCore;
+using ReservatieBeheer.BL.Interfaces;
+using ReservatieBeheer.DL.Repositories;
+using ReservatieBeheer.DL;
+using Microsoft.OpenApi.Models;
+using ReservatieBeheer.BL.Models;
+using ReservatieBeheer.BL.Services;
 
 namespace ReservatieBeheer.Gebruiker.API
 {
@@ -5,12 +12,16 @@ namespace ReservatieBeheer.Gebruiker.API
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            var builder = WebApplication.CreateBuilder(args);                    
 
             // Add services to the container.
+            builder.Services.AddDbContext<ReservatieBeheerContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("ReservatieBeheerDatabase")));
+
+            builder.Services.AddScoped<IGebruikerRepo, GebruikerRepo>();
+            builder.Services.AddScoped<GebruikerService>();
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -21,15 +32,20 @@ namespace ReservatieBeheer.Gebruiker.API
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+
+                //// Ensure the database is deleted and created
+                //using (var scope = app.Services.CreateScope())
+                //{
+                //    var services = scope.ServiceProvider;
+                //    var dbContext = services.GetRequiredService<ReservatieBeheerContext>();
+                //    dbContext.Database.EnsureDeleted();
+                //    dbContext.Database.EnsureCreated();
+                //}
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
-
             app.MapControllers();
-
             app.Run();
         }
     }

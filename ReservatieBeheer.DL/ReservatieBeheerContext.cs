@@ -42,10 +42,7 @@ namespace ReservatieBeheer.DL
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ReservatieEF>()
-                .HasOne(res => res.Restaurant)
-                .WithMany(restaurant => restaurant.Reservaties)
-                .HasForeignKey(res => res.RestaurantID)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(res => res.Restaurant);
 
             modelBuilder.Entity<KlantEF>()
                 .HasOne(k => k.Locatie)
