@@ -58,6 +58,22 @@ namespace ReservatieBeheer.BL.Services
         {
             return _reservatieRepo.PasReservatieAan(reservatieId, nieuweDatum, nieuwAantalPlaatsen);
         }
+
+        public bool AnnuleerReservatie(int reservatieId)
+        {
+            return _reservatieRepo.AnnuleerReservatie(reservatieId);
+        }
+
+        public IEnumerable<Reservatie> ZoekReservaties(int klantId, DateTime? beginDatum, DateTime? eindDatum)
+        {
+            return _reservatieRepo.ZoekReservaties(klantId, beginDatum, eindDatum);
+        }
+        public IEnumerable<Reservatie> ZoekReservatiesPerRestaurant(int restaurantId, DateTime? beginDatum, DateTime? eindDatum)
+        {
+            return _reservatieRepo.ZoekReservatiesPerRestaurant(restaurantId, beginDatum, eindDatum);
+        }
+
+
     }
 
 }

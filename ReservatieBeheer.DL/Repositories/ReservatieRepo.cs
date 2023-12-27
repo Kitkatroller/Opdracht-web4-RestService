@@ -79,5 +79,73 @@ namespace ReservatieBeheer.DL.Repositories
                 }
             }
         }
+
+        public bool AnnuleerReservatie(int reservatieId)
+        {
+            using (var _context = _dbContextFactory.CreateDbContext())
+            {
+                var reservatie = _context.Reservaties.FirstOrDefault(r => r.ID == reservatieId);
+                if (reservatie == null || reservatie.Datum <= DateTime.Now)
+                {
+                    // Reservatie niet gevonden of is al verstreken
+                    return false;
+                }
+
+                // Annuleer de reservatie (dit kan verwijderen of een statuswijziging zijn)
+                _context.Reservaties.Remove(reservatie);
+                _context.SaveChanges();
+
+                return true;
+            }
+        }
+
+        public IEnumerable<Reservatie> ZoekReservaties(int klantId, DateTime? beginDatum, DateTime? eindDatum)
+        {
+            using (var _context = _dbContextFactory.CreateDbContext())
+            {
+                var query = _context.Reservaties.AsQueryable();
+
+                if (beginDatum.HasValue)
+                {
+                    query = query.Where(r => r.Datum >= beginDatum.Value);
+                }
+
+                if (eindDatum.HasValue)
+                {
+                    query = query.Where(r => r.Datum <= eindDatum.Value);
+                }
+
+                var reservatieEFs = query.Where(r => r.KlantID == klantId).ToList();
+
+                // Map each ReservatieEF to Reservatie using the mapper
+                return reservatieEFs.Select(r => ReservatieMapper.MapToBLModel(r)).ToList();
+            }
+        }
+
+
+        public IEnumerable<Reservatie> ZoekReservatiesPerRestaurant(int restaurantId, DateTime? beginDatum, DateTime? eindDatum)
+        {
+            using (var _context = _dbContextFactory.CreateDbContext())
+            {
+                var query = _context.Reservaties.AsQueryable();
+
+                query = query.Where(r => r.Tafel.RestaurantID == restaurantId);
+
+                if (beginDatum.HasValue)
+                {
+                    query = query.Where(r => r.Datum >= beginDatum.Value);
+                }
+
+                if (eindDatum.HasValue)
+                {
+                    query = query.Where(r => r.Datum <= eindDatum.Value);
+                }
+
+                var reservatieEFs = query.ToList();
+
+                // Map each ReservatieEF to Reservatie using the mapper
+                return reservatieEFs.Select(r => ReservatieMapper.MapToBLModel(r)).ToList();
+            }
+        }
     }
 }

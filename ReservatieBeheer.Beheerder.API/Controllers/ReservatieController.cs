@@ -7,13 +7,23 @@ namespace ReservatieBeheer.Beheerder.API.Controllers
     [Route("api/[controller]")]
     public class ReservatieController : Controller
     {
-        //private readonly RestaurantService _restaurantService;
+        private readonly ReservatieService _reservatieService;
 
-        //public RestaurantController(RestaurantService restaurantService)
-        //{
-        //    _restaurantService = restaurantService;
-        //}
-        //[HttpGET]
-        //public IActionResult GetReservaties() { }
+        public ReservatieController(ReservatieService reservatieService)
+        {
+            _reservatieService = reservatieService;
+        }
+
+        [HttpGet("zoekReservatiesPerRestaurant")]
+        public IActionResult ZoekReservatiesPerRestaurant(int restaurantId, DateTime? beginDatum, DateTime? eindDatum)
+        {
+            var reservaties = _reservatieService.ZoekReservatiesPerRestaurant(restaurantId, beginDatum, eindDatum);
+            if (reservaties == null || !reservaties.Any())
+            {
+                return NotFound("Geen reservaties gevonden voor het opgegeven restaurant.");
+            }
+
+            return Ok(reservaties);
+        }
     }
 }

@@ -37,5 +37,27 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
             return Ok("Reservatie succesvol aangepast");
         }
 
+        [HttpDelete("annuleerReservatie/{reservatieId}")]
+        public IActionResult AnnuleerReservatie(int reservatieId)
+        {
+            if (!_reservatieService.AnnuleerReservatie(reservatieId))
+            {
+                return BadRequest("Reservatie kan niet geannuleerd worden of is al verstreken.");
+            }
+
+            return Ok("Reservatie succesvol geannuleerd");
+        }
+
+        [HttpGet("zoekReservaties")]
+        public IActionResult ZoekReservaties(int klantId, DateTime? beginDatum, DateTime? eindDatum)
+        {
+            var reservaties = _reservatieService.ZoekReservaties(klantId, beginDatum, eindDatum);
+            if (reservaties == null || !reservaties.Any())
+            {
+                return NotFound("Geen reservaties gevonden.");
+            }
+
+            return Ok(reservaties);
+        }
     }
 }
