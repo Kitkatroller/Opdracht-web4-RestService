@@ -32,6 +32,10 @@ namespace ReservatieBeheer.BL.Services
             {
                 throw new KeyNotFoundException("Klant niet gevonden");
             }
+
+            restaurant.LocatieID = restau.LocatieID;
+            restaurant.Locatie.ID = restau.LocatieID;
+
             _restaurantRepo.UpdateRestaurant(restaurant);
         }
     }

@@ -53,7 +53,13 @@ namespace ReservatieBeheer.Beheerder.API.Controllers
             {
                 ID = restaurantId,
                 Naam = restaurantDto.Naam,
-                //LocatieID = restaurantDto.Locatie.ID, // Of gebruik LocatieID als dat rechtstreeks wordt meegestuurd
+                Locatie = new Locatie
+                {
+                    Gemeente = restaurantDto.Locatie.Gemeente,
+                    Huisnummerlabel = restaurantDto.Locatie.Huisnummerlabel,
+                    Postcode = restaurantDto.Locatie.Postcode,
+                    Straatnaam = restaurantDto.Locatie.Straatnaam
+                },
                 Keuken = restaurantDto.Keuken,
                 Telefoon = restaurantDto.Telefoon,
                 Email = restaurantDto.Email

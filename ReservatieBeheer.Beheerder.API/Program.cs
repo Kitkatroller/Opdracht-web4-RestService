@@ -5,7 +5,7 @@ using ReservatieBeheer.DL;
 using Microsoft.OpenApi.Models;
 using ReservatieBeheer.BL.Models;
 using ReservatieBeheer.BL.Services;
-
+using ReservatieBeheer.DL.Interfaces;
 
 namespace ReservatieBeheer.Beheerder.API
 {
@@ -16,12 +16,18 @@ namespace ReservatieBeheer.Beheerder.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddDbContext<ReservatieBeheerContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("ReservatieBeheerDatabase")));
+            builder.Services.AddSingleton<IDbContextFactory<ReservatieBeheerContext>>(serviceProvider =>
+            {
+                var options = new DbContextOptionsBuilder<ReservatieBeheerContext>()
+                    .UseSqlServer(builder.Configuration.GetConnectionString("ReservatieBeheerDatabase"))
+                    .Options;
+
+                return new DbContextFactory(options);
+            });
+
 
             builder.Services.AddScoped<IRestaurantRepo, RestaurantRepo>();
             builder.Services.AddScoped<RestaurantService>();
-
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
