@@ -27,9 +27,6 @@ namespace ReservatieBeheer.DL.EFModels
         [Required]
         public DateTime Datum { get; set; }
 
-        [Required]
-        public int Uur { get; set; }
-
         public int TafelNummer { get; set; }
         [ForeignKey("TafelNummer")]
         public TafelEF Tafel { get; set; }

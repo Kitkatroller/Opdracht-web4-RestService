@@ -20,8 +20,6 @@ namespace ReservatieBeheer.BL.Models
 
         public DateTime Datum { get; set; }
 
-        public int Uur { get; set; }
-
         public int TafelId { get; set; }
         public Tafel Tafel { get; set; }
     }

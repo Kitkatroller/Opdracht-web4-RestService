@@ -22,8 +22,6 @@ namespace ReservatieBeheer.DL.EFModels
         [ForeignKey("RestaurantID")]
         public RestaurantEF Restaurant { get; set; }
 
-        public bool Reserved { get; set; }
-
         //Constructor
         public TafelEF(int tafelNummer, int aantal)
         { 

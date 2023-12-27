@@ -20,7 +20,6 @@ namespace ReservatieBeheer.DL.Mappers
                 ContactPersoon = KlantMapper.MapToBLModel(efReservatieEntry.Klant),
                 AantalPlaatsen = efReservatieEntry.AantalPlaatsen,
                 Datum = efReservatieEntry.Datum,
-                Uur = efReservatieEntry.Uur,
                 Tafel = TafelMapper.MapToBLModel(efReservatieEntry.Tafel)
             };
 
@@ -37,7 +36,6 @@ namespace ReservatieBeheer.DL.Mappers
                 KlantID = reservatieEntry.KlantId,
                 AantalPlaatsen = reservatieEntry.AantalPlaatsen,
                 Datum = reservatieEntry.Datum,
-                Uur = reservatieEntry.Uur,
                 TafelNummer = reservatieEntry.TafelId
             };
 
