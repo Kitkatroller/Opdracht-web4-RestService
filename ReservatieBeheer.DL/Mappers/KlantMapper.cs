@@ -17,9 +17,11 @@ namespace ReservatieBeheer.DL.Mappers
 
             var klant = new Klant
             {
+                KlantenNummer = efKlantEntry.KlantenNummer,
                 Naam = efKlantEntry.Naam,
                 Email = efKlantEntry.Email,
                 TelefoonNummer = efKlantEntry.TelefoonNummer,
+                
                 Locatie = LocatieMapper.MapToBLModel(efKlantEntry.Locatie),
                 Reservaties = new List<Reservatie>()
             };
@@ -42,9 +44,11 @@ namespace ReservatieBeheer.DL.Mappers
 
             var klantEF = new KlantEF
             {
+                KlantenNummer = klantEntry.KlantenNummer,
                 Naam = klantEntry.Naam,
                 Email = klantEntry.Email,
                 TelefoonNummer = klantEntry.TelefoonNummer,
+                LocatieID = klantEntry.Locatie.ID,
                 Locatie = LocatieMapper.MapToEfEntity(klantEntry.Locatie),
                 Reservaties = new List<ReservatieEF>()
             };

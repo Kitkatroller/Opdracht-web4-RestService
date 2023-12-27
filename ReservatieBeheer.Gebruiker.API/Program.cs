@@ -12,11 +12,17 @@ namespace ReservatieBeheer.Gebruiker.API
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);                    
+            var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddDbContext<ReservatieBeheerContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("ReservatieBeheerDatabase")));
+            builder.Services.AddSingleton<IDbContextFactory<ReservatieBeheerContext>>(serviceProvider =>
+            {
+                var options = new DbContextOptionsBuilder<ReservatieBeheerContext>()
+                    .UseSqlServer(builder.Configuration.GetConnectionString("ReservatieBeheerDatabase"))
+                    .Options;
+
+                return new DbContextFactory(options);
+            });
 
             builder.Services.AddScoped<IGebruikerRepo, GebruikerRepo>();
             builder.Services.AddScoped<GebruikerService>();

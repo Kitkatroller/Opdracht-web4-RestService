@@ -13,55 +13,87 @@ namespace ReservatieBeheer.DL.Repositories
 {
     public class GebruikerRepo : IGebruikerRepo
     {
-        private readonly ReservatieBeheerContext _context;
+        private readonly IDbContextFactory<ReservatieBeheerContext> _dbContextFactory;
 
-        // Constructor met dependency injection voor de DbContext
-        public GebruikerRepo(ReservatieBeheerContext context)
+        public GebruikerRepo(IDbContextFactory<ReservatieBeheerContext> dbContextFactory)
         {
-            _context = context;
+            _dbContextFactory = dbContextFactory;
         }
 
         public void VoegGebruikerToe(Klant klant)
         {
-            try
+            using (var _context = _dbContextFactory.CreateDbContext())
             {
-                KlantEF efKlant = KlantMapper.MapToEfEntity(klant);
-                _context.Locaties.Add(efKlant.Locatie);
-                _context.SaveChanges();
+                try
+                {
+                    KlantEF efKlant = KlantMapper.MapToEfEntity(klant);
+                    _context.Locaties.Add(efKlant.Locatie);
+                    _context.SaveChanges();
 
-                // Update de locatie ID op de klant
-                efKlant.LocatieID = klant.Locatie.ID;
+                    // Update de locatie ID op de klant
+                    efKlant.LocatieID = klant.Locatie.ID;
 
-                _context.Klanten.Add(efKlant);
-                _context.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                // Overweeg een specifiekere foutafhandeling of log de fout
-                throw new Exception("Fout bij het toevoegen van de gebruiker: " + ex.Message);
+                    _context.Klanten.Add(efKlant);
+                    _context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    // Overweeg een specifiekere foutafhandeling of log de fout
+                    throw new Exception("Fout bij het toevoegen van de gebruiker: " + ex.Message);
+                }
             }
         }
 
         public Klant GetKlantById(int klantenNummer)
         {
-            // Zoek de klant op basis van ID
-            return KlantMapper.MapToBLModel(_context.Klanten.FirstOrDefault(k => k.KlantenNummer == klantenNummer && !k.IsUitgeschreven));
+            using (var _context = _dbContextFactory.CreateDbContext())
+            {
+                // Zoek de klant op basis van ID en laad de geassocieerde Locatie
+                var klantEF = _context.Klanten
+                    .Include(k => k.Locatie) // Eager loading van de Locatie
+                    .FirstOrDefault(k => k.KlantenNummer == klantenNummer && !k.IsUitgeschreven);
+
+                return KlantMapper.MapToBLModel(klantEF);
+            }
         }
 
         public void UpdateKlant(Klant klant)
         {
-            // Update de klant in de context
-            _context.Klanten.Update(KlantMapper.MapToEfEntity(klant));
-            _context.SaveChanges();
+            using (var _context = _dbContextFactory.CreateDbContext())
+            {
+                var klantEF = KlantMapper.MapToEfEntity(klant);
+
+                // Eager load de bestaande Klant met Locatie
+                var bestaandeKlant = _context.Klanten
+                    .Include(k => k.Locatie)
+                    .FirstOrDefault(k => k.KlantenNummer == klantEF.KlantenNummer);
+
+                if (bestaandeKlant != null)
+                {
+                    // Kopieer de waarden van klantEF naar bestaandeKlant
+                    _context.Entry(bestaandeKlant).CurrentValues.SetValues(klantEF);
+
+                    // Indien nodig, update ook de gerelateerde Locatie
+                    if (klantEF.Locatie != null && bestaandeKlant.Locatie != null)
+                    {
+                        _context.Entry(bestaandeKlant.Locatie).CurrentValues.SetValues(klantEF.Locatie);
+                    }
+
+                    _context.SaveChanges();
+                }
+            }
         }
 
         public void UitschrijvenGebruiker(int klantenNummer)
         {
-            var klant = _context.Klanten.Find(klantenNummer);
-            if (klant != null)
+            using (var _context = _dbContextFactory.CreateDbContext())
             {
-                klant.IsUitgeschreven = true;
-                _context.SaveChanges();
+                var klant = _context.Klanten.Find(klantenNummer);
+                if (klant != null)
+                {
+                    klant.IsUitgeschreven = true;
+                    _context.SaveChanges();
+                }
             }
         }
     }

@@ -33,6 +33,9 @@ namespace ReservatieBeheer.BL.Services
                 throw new KeyNotFoundException("Klant niet gevonden");
             }
 
+            locatie.ID = klant.Locatie.ID;
+
+            klant.KlantenNummer = klantenNummer;
             klant.Naam = naam;
             klant.Email = email;
             klant.TelefoonNummer = telefoonNummer;
