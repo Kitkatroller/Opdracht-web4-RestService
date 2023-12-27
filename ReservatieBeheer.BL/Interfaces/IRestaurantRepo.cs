@@ -14,5 +14,6 @@ namespace ReservatieBeheer.BL.Interfaces
         void UpdateRestaurant(Restaurant restaurant);
         Restaurant GetRestaurantById(int restaurantId);
         IEnumerable<Restaurant> ZoekRestaurants(string postcode, string keuken);
+        IEnumerable<(string Naam, string Keuken, Tafel Tafel)> VindGeschikteTafelsPerRestaurant(int aantalPersonen);
     }
 }

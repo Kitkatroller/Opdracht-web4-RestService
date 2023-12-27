@@ -125,6 +125,28 @@ namespace ReservatieBeheer.DL.Repositories
 
                 return query.Select(r => RestaurantMapper.MapToBLModel(r)).ToList();
             }
-        }       
+        }
+
+        public IEnumerable<(string Naam, string Keuken, Tafel Tafel)> VindGeschikteTafelsPerRestaurant(int aantalPersonen)
+        {
+            using (var _context = _dbContextFactory.CreateDbContext())
+            {
+                var resultaat = _context.Restaurants
+                    .Select(r => new
+                    {
+                        r.Naam,
+                        r.Keuken,
+                        GeschikteTafelEF = r.Tafels
+                            .Where(t => !t.Reserved && t.Aantal >= aantalPersonen)
+                            .OrderBy(t => t.Aantal)
+                            .FirstOrDefault()
+                    })
+                    .Where(r => r.GeschikteTafelEF != null)
+                    .ToList()
+                    .Select(r => (r.Naam, r.Keuken, Tafel: TafelMapper.MapToBLModel(r.GeschikteTafelEF)));
+
+                return resultaat;
+            }
+        }
     }
 }

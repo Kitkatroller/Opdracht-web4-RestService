@@ -43,7 +43,9 @@ namespace ReservatieBeheer.BL.Services
         {
             return _restaurantRepo.ZoekRestaurants(postcode, keuken);
         }
-        
-
+        public IEnumerable<(string Naam, string Keuken, Tafel Tafel)> VindBeschikbareRestaurants(int aantalPersonen)
+        {
+            return _restaurantRepo.VindGeschikteTafelsPerRestaurant(aantalPersonen);
+        }
     }
 }

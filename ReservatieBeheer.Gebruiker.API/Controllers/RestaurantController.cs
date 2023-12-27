@@ -21,6 +21,20 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
         {
             var restaurants = _restaurantService.ZoekRestaurants(postcode, keuken);
             return Ok(restaurants);
-        }  
+        }
+        [HttpGet("beschikbaar")]
+        public ActionResult<IEnumerable<BeschikbaarRestaurantDto>> VindBeschikbareRestaurants(int aantalPersonen)
+        {
+            var beschikbareRestaurants = _restaurantService.VindBeschikbareRestaurants(aantalPersonen);
+
+            var beschikbareRestaurantsDto = beschikbareRestaurants.Select(r => new BeschikbaarRestaurantDto
+            {
+                Naam = r.Naam,
+                Keuken = r.Keuken,
+                AantalPlaatsen = r.Tafel.Aantal
+            });
+
+            return Ok(beschikbareRestaurantsDto);
+        }
     }
 }
