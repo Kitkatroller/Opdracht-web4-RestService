@@ -13,5 +13,6 @@ namespace ReservatieBeheer.BL.Interfaces
         void VerwijderRestaurant(int restaurantId);
         void UpdateRestaurant(Restaurant restaurant);
         Restaurant GetRestaurantById(int restaurantId);
+        IEnumerable<Restaurant> ZoekRestaurants(string postcode, string keuken);
     }
 }

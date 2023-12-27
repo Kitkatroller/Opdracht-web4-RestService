@@ -45,9 +45,14 @@ namespace ReservatieBeheer.Beheerder.API
                 //using (var scope = app.Services.CreateScope())
                 //{
                 //    var services = scope.ServiceProvider;
-                //    var dbContext = services.GetRequiredService<ReservatieBeheerContext>();
-                //    dbContext.Database.EnsureDeleted();
-                //    dbContext.Database.EnsureCreated();
+
+                //    // Gebruik de factory om een DbContext te creëren
+                //    var dbContextFactory = services.GetRequiredService<IDbContextFactory<ReservatieBeheerContext>>();
+                //    using (var dbContext = dbContextFactory.CreateDbContext())
+                //    {
+                //        dbContext.Database.EnsureDeleted();
+                //        dbContext.Database.EnsureCreated();
+                //    }
                 //}
             }
 

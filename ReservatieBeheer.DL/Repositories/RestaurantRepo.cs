@@ -58,22 +58,6 @@ namespace ReservatieBeheer.DL.Repositories
             }
             
         }
-        //public void UpdateRestaurant(Restaurant restaurant)
-        //{
-        //    using (var _context = _dbContextFactory.CreateDbContext())
-        //    {
-        //        var restaurantEF = RestaurantMapper.MapToEfEntity(restaurant);
-
-        //        if (restaurantEF.Locatie != null && restaurantEF.Locatie.ID != 0)
-        //        {
-        //            // Als de Locatie al bestaat (ID is ingesteld), markeer als ongewijzigd
-        //            _context.Entry(restaurantEF.Locatie).State = EntityState.Unchanged;
-        //        }
-
-        //        _context.Restaurants.Update(restaurantEF);
-        //        _context.SaveChanges();
-        //    }
-        //}
 
         public void UpdateRestaurant(Restaurant restaurant)
         {
@@ -110,8 +94,6 @@ namespace ReservatieBeheer.DL.Repositories
             }
         }
 
-
-
         public Restaurant GetRestaurantById(int restaurantId)
         {
             using (var _context = _dbContextFactory.CreateDbContext())
@@ -124,5 +106,25 @@ namespace ReservatieBeheer.DL.Repositories
             }
             
         }
+
+        public IEnumerable<Restaurant> ZoekRestaurants(string postcode, string keuken)
+        {
+            using (var _context = _dbContextFactory.CreateDbContext())
+            {
+                var query = _context.Restaurants.AsQueryable();
+
+                if (!string.IsNullOrEmpty(postcode))
+                {
+                    query = query.Where(r => r.Locatie.Postcode == postcode);
+                }
+
+                if (!string.IsNullOrEmpty(keuken))
+                {
+                    query = query.Where(r => r.Keuken.ToLower().Contains(keuken.ToLower()));
+                }
+
+                return query.Select(r => RestaurantMapper.MapToBLModel(r)).ToList();
+            }
+        }       
     }
 }

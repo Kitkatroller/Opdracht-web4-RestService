@@ -27,6 +27,9 @@ namespace ReservatieBeheer.Gebruiker.API
             builder.Services.AddScoped<IGebruikerRepo, GebruikerRepo>();
             builder.Services.AddScoped<GebruikerService>();
 
+            builder.Services.AddScoped<IRestaurantRepo, RestaurantRepo>();
+            builder.Services.AddScoped<RestaurantService>();
+
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -39,14 +42,19 @@ namespace ReservatieBeheer.Gebruiker.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
 
-                //// Ensure the database is deleted and created
-                //using (var scope = app.Services.CreateScope())
-                //{
-                //    var services = scope.ServiceProvider;
-                //    var dbContext = services.GetRequiredService<ReservatieBeheerContext>();
-                //    dbContext.Database.EnsureDeleted();
-                //    dbContext.Database.EnsureCreated();
-                //}
+                // Ensure the database is deleted and created
+                using (var scope = app.Services.CreateScope())
+                {
+                    var services = scope.ServiceProvider;
+
+                    // Gebruik de factory om een DbContext te creëren
+                    var dbContextFactory = services.GetRequiredService<IDbContextFactory<ReservatieBeheerContext>>();
+                    using (var dbContext = dbContextFactory.CreateDbContext())
+                    {
+                        dbContext.Database.EnsureDeleted();
+                        dbContext.Database.EnsureCreated();
+                    }
+                }
             }
 
             app.UseHttpsRedirection();

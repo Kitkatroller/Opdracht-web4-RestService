@@ -16,11 +16,6 @@ namespace ReservatieBeheer.DL.EFModels
         [Range(1, int.MaxValue, ErrorMessage = "Reservatienummer moet groter dan 0 zijn")]
         public int ID { get; set; }
 
-
-        public int RestaurantID { get; set; }
-        [ForeignKey("RestaurantID")]
-        public RestaurantEF Restaurant { get; set; }
-
         public int KlantID { get; set; }
         [ForeignKey("KlantID")]
         public KlantEF Klant { get; set; }

@@ -31,5 +31,8 @@ namespace ReservatieBeheer.DL.EFModels
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Geen geldig Email Address")]
         public string Email { get; set; }
+
+        // Collectie van Tafels
+        public virtual ICollection<TafelEF> Tafels { get; set; }
     }
 }

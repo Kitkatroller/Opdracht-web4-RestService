@@ -38,5 +38,12 @@ namespace ReservatieBeheer.BL.Services
 
             _restaurantRepo.UpdateRestaurant(restaurant);
         }
+
+        public IEnumerable<Restaurant> ZoekRestaurants(string postcode, string keuken)
+        {
+            return _restaurantRepo.ZoekRestaurants(postcode, keuken);
+        }
+        
+
     }
 }

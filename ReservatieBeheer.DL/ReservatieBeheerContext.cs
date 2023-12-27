@@ -41,8 +41,7 @@ namespace ReservatieBeheer.DL
                 .HasForeignKey(res => res.KlantID)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<ReservatieEF>()
-                .HasOne(res => res.Restaurant);
+            modelBuilder.Entity<ReservatieEF>();
 
             modelBuilder.Entity<KlantEF>()
                 .HasOne(k => k.Locatie)
@@ -53,6 +52,11 @@ namespace ReservatieBeheer.DL
                 .HasOne(r => r.Locatie)
                 .WithMany()
                 .HasForeignKey(r => r.LocatieID);
+
+            modelBuilder.Entity<TafelEF>()
+                .HasOne(t => t.Restaurant)
+                .WithMany(r => r.Tafels) // Zorg ervoor dat RestaurantEF een collectie Tafels heeft
+                .HasForeignKey(t => t.RestaurantID);
         }
     }
 }
