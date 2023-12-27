@@ -11,9 +11,9 @@ namespace ReservatieBeheer.BL.Models
     public class Reservatie
     {
         public int ID { get; set; }
-
-        public Restaurant Restaurant { get; set; }
                         
+        public int KlantId{ get; set; }
+
         public Klant ContactPersoon { get; set; }
                 
         public int AantalPlaatsen { get; set; }
@@ -22,6 +22,7 @@ namespace ReservatieBeheer.BL.Models
 
         public int Uur { get; set; }
 
+        public int TafelId { get; set; }
         public Tafel Tafel { get; set; }
     }
 }

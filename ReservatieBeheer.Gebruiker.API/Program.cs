@@ -30,6 +30,9 @@ namespace ReservatieBeheer.Gebruiker.API
             builder.Services.AddScoped<IRestaurantRepo, RestaurantRepo>();
             builder.Services.AddScoped<RestaurantService>();
 
+            builder.Services.AddScoped<IReservatieRepo, ReservatieRepo>();
+            builder.Services.AddScoped<ReservatieService>();
+
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

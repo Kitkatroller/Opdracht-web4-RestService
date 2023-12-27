@@ -14,14 +14,14 @@ namespace ReservatieBeheer.DL.Mappers
         {
             if (efTafelEntry == null) return null;
 
-            return new Tafel(efTafelEntry.TafelNummer, efTafelEntry.Aantal);
+            return new Tafel(efTafelEntry.TafelNummer, efTafelEntry.Aantal);//moet nog restau bij
         }
 
         public static TafelEF MapToEfEntity(Tafel TafelEntry)
         {
             if (TafelEntry == null) return null;
 
-            return new TafelEF(TafelEntry.TafelNummer, TafelEntry.Aantal);
+            return new TafelEF(TafelEntry.TafelNummer, TafelEntry.Aantal);//moet nog restau bij
         }
     }
 }

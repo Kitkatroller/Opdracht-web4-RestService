@@ -14,17 +14,34 @@ namespace ReservatieBeheer.DL.Mappers
         {
             if (efReservatieEntry == null) return null;
 
+            var blReservatie = new Reservatie
+            {
+                ID = efReservatieEntry.ID,
+                ContactPersoon = KlantMapper.MapToBLModel(efReservatieEntry.Klant),
+                AantalPlaatsen = efReservatieEntry.AantalPlaatsen,
+                Datum = efReservatieEntry.Datum,
+                Uur = efReservatieEntry.Uur,
+                Tafel = TafelMapper.MapToBLModel(efReservatieEntry.Tafel)
+            };
 
-
-            return new Reservatie();
+            return blReservatie;
         }
 
-        public static ReservatieEF MapToEfEntity(Reservatie ReservatieEntry)
+        public static ReservatieEF MapToEfEntity(Reservatie reservatieEntry)
         {
-            if (ReservatieEntry == null) return null;
+            if (reservatieEntry == null) return null;
 
+            var efReservatie = new ReservatieEF
+            {
+                ID = reservatieEntry.ID,
+                KlantID = reservatieEntry.KlantId,
+                AantalPlaatsen = reservatieEntry.AantalPlaatsen,
+                Datum = reservatieEntry.Datum,
+                Uur = reservatieEntry.Uur,
+                TafelNummer = reservatieEntry.TafelId
+            };
 
-            return new ReservatieEF();
+            return efReservatie;
         }
     }
 }

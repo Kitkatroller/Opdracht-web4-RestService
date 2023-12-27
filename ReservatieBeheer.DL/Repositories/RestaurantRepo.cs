@@ -127,23 +127,51 @@ namespace ReservatieBeheer.DL.Repositories
             }
         }
 
-        public IEnumerable<(string Naam, string Keuken, Tafel Tafel)> VindGeschikteTafelsPerRestaurant(int aantalPersonen)
+        //public IEnumerable<(string Naam, string Keuken, Tafel Tafel)> VindGeschikteTafelsPerRestaurant(int aantalPersonen)
+        //{
+        //    using (var _context = _dbContextFactory.CreateDbContext())
+        //    {
+        //        var resultaat = _context.Restaurants
+        //            .Select(r => new
+        //            {
+        //                r.Naam,
+        //                r.Keuken,
+        //                GeschikteTafelEF = r.Tafels
+        //                    .Where(t => !t.Reserved && t.Aantal >= aantalPersonen)
+        //                    .OrderBy(t => t.Aantal)
+        //                    .FirstOrDefault()
+        //            })
+        //            .Where(r => r.GeschikteTafelEF != null)
+        //            .ToList()
+        //            .Select(r => (r.Naam, r.Keuken, Tafel: TafelMapper.MapToBLModel(r.GeschikteTafelEF)));
+
+        //        return resultaat;
+        //    }
+        //}
+
+        public IEnumerable<(string Naam, string Keuken, Tafel Tafel)> VindGeschikteTafelsPerRestaurant(int aantalPersonen, DateTime gewensteTijd)
         {
+            var eindTijd = gewensteTijd.AddHours(1.5);
+
             using (var _context = _dbContextFactory.CreateDbContext())
             {
+                // Fetch restaurants with suitable tables directly
                 var resultaat = _context.Restaurants
                     .Select(r => new
                     {
                         r.Naam,
                         r.Keuken,
                         GeschikteTafelEF = r.Tafels
-                            .Where(t => !t.Reserved && t.Aantal >= aantalPersonen)
                             .OrderBy(t => t.Aantal)
-                            .FirstOrDefault()
+                            .FirstOrDefault(t => t.Aantal >= aantalPersonen &&
+                                                 !_context.Reservaties.Any(res => res.TafelNummer == t.TafelNummer &&
+                                                                                  ((res.Datum >= gewensteTijd && res.Datum < eindTijd) ||
+                                                                                   (res.Datum.AddHours(1.5) > gewensteTijd && res.Datum < eindTijd))))
                     })
                     .Where(r => r.GeschikteTafelEF != null)
                     .ToList()
-                    .Select(r => (r.Naam, r.Keuken, Tafel: TafelMapper.MapToBLModel(r.GeschikteTafelEF)));
+                    .Select(r => (r.Naam, r.Keuken, Tafel: TafelMapper.MapToBLModel(r.GeschikteTafelEF)))
+                    .ToList();
 
                 return resultaat;
             }

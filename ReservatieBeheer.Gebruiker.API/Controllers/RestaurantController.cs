@@ -23,9 +23,9 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
             return Ok(restaurants);
         }
         [HttpGet("beschikbaar")]
-        public ActionResult<IEnumerable<BeschikbaarRestaurantDto>> VindBeschikbareRestaurants(int aantalPersonen)
+        public ActionResult<IEnumerable<BeschikbaarRestaurantDto>> VindBeschikbareRestaurants(int aantalPersonen, DateTime tijd)
         {
-            var beschikbareRestaurants = _restaurantService.VindBeschikbareRestaurants(aantalPersonen);
+            var beschikbareRestaurants = _restaurantService.VindBeschikbareRestaurants(aantalPersonen, tijd);
 
             var beschikbareRestaurantsDto = beschikbareRestaurants.Select(r => new BeschikbaarRestaurantDto
             {
