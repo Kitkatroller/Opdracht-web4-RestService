@@ -54,6 +54,10 @@ namespace ReservatieBeheer.BL.Services
             // voor de opgegeven tafel tussen de beginTijd en eindTijd
             return _reservatieRepo.IsTafelVrij(tafelNummer, beginTijd, eindTijd);
         }
+        public bool PasReservatieAan(int reservatieId, DateTime nieuweDatum, int nieuwAantalPlaatsen)
+        {
+            return _reservatieRepo.PasReservatieAan(reservatieId, nieuweDatum, nieuwAantalPlaatsen);
+        }
     }
 
 }

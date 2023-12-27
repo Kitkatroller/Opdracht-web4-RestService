@@ -26,5 +26,16 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
 
             return Ok("Reservatie gemaakt");
         }
+        [HttpPut("pasReservatieAan/{reservatieId}")]
+        public IActionResult PasReservatieAan(int reservatieId, ReservatieDto reservatie)
+        {
+            if (!_reservatieService.PasReservatieAan(reservatieId, reservatie.Datum, reservatie.AantalPlaatsen))
+            {
+                return BadRequest("Aanpassing van de reservatie is niet mogelijk. Controleer de beschikbaarheid van de tafel op de nieuwe datum en tijd.");
+            }
+
+            return Ok("Reservatie succesvol aangepast");
+        }
+
     }
 }

@@ -11,5 +11,6 @@ namespace ReservatieBeheer.BL.Interfaces
     {
         void MaakReservatie(Reservatie reservatie);
         bool IsTafelVrij(int tafelNummer, DateTime beginTijd, DateTime eindTijd);
+        bool PasReservatieAan(int reservatieId, DateTime nieuweDatum, int nieuwAantalPlaatsen);
     }
 }

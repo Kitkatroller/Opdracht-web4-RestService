@@ -44,5 +44,40 @@ namespace ReservatieBeheer.DL.Repositories
             }
                 
         }
+
+        public bool PasReservatieAan(int reservatieId, DateTime nieuweDatum, int nieuwAantalPlaatsen)
+        {
+            using (var _context = _dbContextFactory.CreateDbContext())
+            {
+                var reservatie = _context.Reservaties.FirstOrDefault(r => r.ID == reservatieId);
+                if (reservatie == null)
+                {
+                    // Reservatie niet gevonden
+                    return false;
+                }
+
+                var eindTijd = nieuweDatum.AddHours(1.5);
+
+                // Controleer of de tafel beschikbaar is op de nieuwe datum en tijd
+                if (!_context.Reservaties.Any(r =>
+                    r.TafelNummer == reservatie.TafelNummer &&
+                    r.ID != reservatieId &&
+                    ((r.Datum >= nieuweDatum && r.Datum < eindTijd) ||
+                     (r.Datum.AddHours(1.5) > nieuweDatum && r.Datum < eindTijd))))
+                {
+                    // Update de reservatie
+                    reservatie.Datum = nieuweDatum;
+                    reservatie.AantalPlaatsen = nieuwAantalPlaatsen;
+
+                    _context.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    // Tafel niet beschikbaar op de nieuwe datum en tijd
+                    return false;
+                }
+            }
+        }
     }
 }
