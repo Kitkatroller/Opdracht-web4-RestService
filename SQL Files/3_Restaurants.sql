@@ -1,0 +1,10 @@
+INSERT INTO Restaurants (Naam, LocatieID, Keuken, Telefoon, Email) VALUES ('Restaurant A', 11, 'Italian', '0123456789', 'contact@resta.com');
+INSERT INTO Restaurants (Naam, LocatieID, Keuken, Telefoon, Email) VALUES ('Restaurant B', 12, 'French', '0123456790', 'contact@restb.com');
+INSERT INTO Restaurants (Naam, LocatieID, Keuken, Telefoon, Email) VALUES ('Restaurant C', 13, 'Japanese', '0123456791', 'contact@restc.com');
+INSERT INTO Restaurants (Naam, LocatieID, Keuken, Telefoon, Email) VALUES ('Restaurant D', 14, 'Chinese', '0123456792', 'contact@restd.com');
+INSERT INTO Restaurants (Naam, LocatieID, Keuken, Telefoon, Email) VALUES ('Restaurant E', 15, 'Mexican', '0123456793', 'contact@reste.com');
+INSERT INTO Restaurants (Naam, LocatieID, Keuken, Telefoon, Email) VALUES ('Restaurant F', 16, 'Indian', '0123456794', 'contact@restf.com');
+INSERT INTO Restaurants (Naam, LocatieID, Keuken, Telefoon, Email) VALUES ('Restaurant G', 17, 'Thai', '0123456795', 'contact@restg.com');
+INSERT INTO Restaurants (Naam, LocatieID, Keuken, Telefoon, Email) VALUES ('Restaurant H', 18, 'Greek', '0123456796', 'contact@resth.com');
+INSERT INTO Restaurants (Naam, LocatieID, Keuken, Telefoon, Email) VALUES ('Restaurant I', 19, 'Spanish', '0123456797', 'contact@resti.com');
+INSERT INTO Restaurants (Naam, LocatieID, Keuken, Telefoon, Email) VALUES ('Restaurant J', 20, 'American', '0123456798', 'contact@restj.com');

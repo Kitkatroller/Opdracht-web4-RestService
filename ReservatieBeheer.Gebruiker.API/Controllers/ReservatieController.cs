@@ -15,14 +15,22 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
             _reservatieService = reservatieService;
         }
 
-        [HttpPost("maakReservatie")]
-        public IActionResult MaakReservatie(ReservatieDto reservatie)
+        [HttpPost("maakReservatie/{klantId}")]
+        public IActionResult MaakReservatie(int klantId, ReservatieDto reservatie, int TafelNummer)
         {
-            // Valideer de input parameters
-            _reservatieService.MaakReservatie(reservatie.klantId,
-                reservatie.AantalPlaatsen,
-                reservatie.Datum,
-                reservatie.TafelNummer);
+            try
+            {
+                // Valideer de input parameters
+                _reservatieService.MaakReservatie(klantId,
+                    reservatie.AantalPlaatsen,
+                    reservatie.Datum,
+                    TafelNummer);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
 
             return Ok("Reservatie gemaakt");
         }

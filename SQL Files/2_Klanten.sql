@@ -1,0 +1,10 @@
+INSERT INTO Klanten(Naam, Email, TelefoonNummer, IsUitgeschreven, LocatieID) VALUES ('John Doe', 'johndoe@example.com', '1234567890', 1, 1);
+INSERT INTO Klanten (Naam, Email, TelefoonNummer, IsUitgeschreven, LocatieID) VALUES ('Jane Smith', 'janesmith@example.com', '0987654321', 0, 2);
+INSERT INTO Klanten (Naam, Email, TelefoonNummer, IsUitgeschreven, LocatieID) VALUES ('Alice Johnson', 'alicej@example.com', '1122334455', 1, 3);
+INSERT INTO Klanten (Naam, Email, TelefoonNummer, IsUitgeschreven, LocatieID) VALUES ('Bob Brown', 'bobbrown@example.com', '5566778899', 0, 4);
+INSERT INTO Klanten (Naam, Email, TelefoonNummer, IsUitgeschreven, LocatieID) VALUES ('Carol White', 'carolw@example.com', '1231231234', 1, 5);
+INSERT INTO Klanten (Naam, Email, TelefoonNummer, IsUitgeschreven, LocatieID) VALUES ('David Green', 'davidg@example.com', '3213214321', 0, 6);
+INSERT INTO Klanten (Naam, Email, TelefoonNummer, IsUitgeschreven, LocatieID) VALUES ('Eva Black', 'evab@example.com', '4564564567', 1, 7);
+INSERT INTO Klanten (Naam, Email, TelefoonNummer, IsUitgeschreven, LocatieID) VALUES ('Frank Gray', 'frankg@example.com', '7897897890', 0, 8);
+INSERT INTO Klanten (Naam, Email, TelefoonNummer, IsUitgeschreven, LocatieID) VALUES ('Grace Lee', 'gracel@example.com', '6546546543', 1, 9);
+INSERT INTO Klanten (Naam, Email, TelefoonNummer, IsUitgeschreven, LocatieID) VALUES ('Henry Ford', 'henryf@example.com', '9879879876', 0, 10);
