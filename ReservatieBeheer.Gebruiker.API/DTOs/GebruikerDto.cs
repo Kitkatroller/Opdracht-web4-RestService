@@ -5,8 +5,6 @@ namespace ReservatieBeheer.Gebruiker.API.DTOs
 {
     public class GebruikerDto
     {
-        public int KlantNummer { get; set; }
-
         [Required(ErrorMessage = "Naam is verplicht")]
         public string Naam { get; set; }
 

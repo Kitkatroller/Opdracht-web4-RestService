@@ -42,12 +42,10 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
             }
             catch (Exception ex)
             {
-                // Hier kun je logging toevoegen
                 return StatusCode(500, "Interne serverfout: " + ex.Message);
             }
         }
 
-        // PUT: api/gebruiker/update/{klantenNummer}
         [HttpPut("update/{klantenNummer}")]
         public IActionResult UpdateGebruiker(int klantenNummer, [FromBody] GebruikerDto gebruikerDto)
         {
@@ -74,7 +72,6 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
             }
             catch (Exception ex)
             {
-                // Voeg logica voor foutafhandeling toe
                 return StatusCode(500, "Interne serverfout: " + ex.Message);
             }
         }
@@ -93,7 +90,6 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
             }
             catch (Exception ex)
             {
-                // Logica voor foutafhandeling
                 return StatusCode(500, "Interne serverfout: " + ex.Message);
             }
         }
