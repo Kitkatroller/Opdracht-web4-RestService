@@ -18,21 +18,26 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
         [HttpPost("maakReservatie/{klantId}")]
         public IActionResult MaakReservatie(int klantId, ReservatieDto reservatie, int TafelNummer)
         {
+            if (!ModelState.IsValid)
+            {               
+                return BadRequest(ModelState);
+            }
             try
             {
-                // Valideer de input parameters
                 _reservatieService.MaakReservatie(klantId,
                     reservatie.AantalPlaatsen,
                     reservatie.Datum,
                     TafelNummer);
+                return Ok("Reservatie gemaakt");
             }
             catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
             }
-            
-
-            return Ok("Reservatie gemaakt");
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Interne serverfout: " + ex.Message);
+            }
         }
         [HttpPut("pasReservatieAan/{reservatieId}")]
         public IActionResult PasReservatieAan(int reservatieId, ReservatieDto reservatie)

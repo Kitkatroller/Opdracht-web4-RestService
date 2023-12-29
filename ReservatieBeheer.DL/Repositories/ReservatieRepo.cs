@@ -22,10 +22,17 @@ namespace ReservatieBeheer.DL.Repositories
 
         public void MaakReservatie(Reservatie reservatie)
         {
-            using (var _context = _dbContextFactory.CreateDbContext())
+            try
             {
-                _context.Reservaties.Add(ReservatieMapper.MapToEfEntity(reservatie));
-                _context.SaveChanges();
+                using (var _context = _dbContextFactory.CreateDbContext())
+                {
+                    _context.Reservaties.Add(ReservatieMapper.MapToEfEntity(reservatie));
+                    _context.SaveChanges();
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                throw new ArgumentException("Klant met opgegeven ID bestaat niet.", ex);
             }
         }
 
