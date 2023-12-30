@@ -44,19 +44,19 @@ namespace ReservatieBeheer.Beheerder.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
 
-                //// Ensure the database is deleted and created
-                //using (var scope = app.Services.CreateScope())
-                //{
-                //    var services = scope.ServiceProvider;
+                // Ensure the database is deleted and created
+                using (var scope = app.Services.CreateScope())
+                {
+                    var services = scope.ServiceProvider;
 
-                //    // Gebruik de factory om een DbContext te creëren
-                //    var dbContextFactory = services.GetRequiredService<IDbContextFactory<ReservatieBeheerContext>>();
-                //    using (var dbContext = dbContextFactory.CreateDbContext())
-                //    {
-                //        dbContext.Database.EnsureDeleted();
-                //        dbContext.Database.EnsureCreated();
-                //    }
-                //}
+                    // Gebruik de factory om een DbContext te creëren
+                    var dbContextFactory = services.GetRequiredService<IDbContextFactory<ReservatieBeheerContext>>();
+                    using (var dbContext = dbContextFactory.CreateDbContext())
+                    {
+                        dbContext.Database.EnsureDeleted();
+                        dbContext.Database.EnsureCreated();
+                    }
+                }
             }
 
             app.UseHttpsRedirection();

@@ -34,5 +34,7 @@ namespace ReservatieBeheer.DL.EFModels
 
         // Collectie van Tafels
         public virtual ICollection<TafelEF> Tafels { get; set; }
+
+        public bool IsActive { get; set; } = true;
     }
 }

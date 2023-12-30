@@ -30,8 +30,6 @@ namespace ReservatieBeheer.DL.Repositories
                     RestaurantEF restaurantEF = RestaurantMapper.MapToEfEntity(restaurant);
                     _context.Locaties.Add(restaurantEF.Locatie);
                     _context.SaveChanges();
-
-                    // Update de locatie ID op de klant
                     restaurantEF.LocatieID = restaurant.Locatie.ID;
 
                     _context.Restaurants.Add(restaurantEF);
@@ -52,12 +50,15 @@ namespace ReservatieBeheer.DL.Repositories
                 var restaurant = _context.Restaurants.Find(restaurantId);
                 if (restaurant != null)
                 {
-                    _context.Restaurants.Remove(restaurant);
+                    // Mark the restaurant as inactive instead of deleting
+                    restaurant.IsActive = false;
+
+                    // Save the changes to the database
                     _context.SaveChanges();
                 }
             }
-            
         }
+
 
         public void UpdateRestaurant(Restaurant restaurant)
         {
@@ -100,12 +101,12 @@ namespace ReservatieBeheer.DL.Repositories
             {
                 var restaurantEf = _context.Restaurants
                     .Include(r => r.Locatie) // Eager loading van de Locatie, indien nodig
-                    .FirstOrDefault(r => r.ID == restaurantId);
+                    .FirstOrDefault(r => r.ID == restaurantId && r.IsActive);
 
                 return restaurantEf != null ? RestaurantMapper.MapToBLModel(restaurantEf) : null;
             }
-            
         }
+
 
         public IEnumerable<Restaurant> ZoekRestaurants(string postcode, string keuken)
         {
@@ -176,5 +177,13 @@ namespace ReservatieBeheer.DL.Repositories
                 return resultaat;
             }
         }
+        public bool DoesRestaurantExist(int restaurantId)
+        {
+            using (var _context = _dbContextFactory.CreateDbContext())
+            {
+                return _context.Restaurants.Any(restaurant => restaurant.ID == restaurantId && restaurant.IsActive);
+            }
+        }
+
     }
 }

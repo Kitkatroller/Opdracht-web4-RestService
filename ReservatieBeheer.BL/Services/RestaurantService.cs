@@ -25,15 +25,19 @@ namespace ReservatieBeheer.BL.Services
         }
         public void VerwijderRestaurant(int restaurantId)
         {
+            if (!_restaurantRepo.DoesRestaurantExist(restaurantId))
+            {
+                throw ExceptionFactory.CreateRestaurantNotFoundException(restaurantId);
+            }
             _restaurantRepo.VerwijderRestaurant(restaurantId);
         }
         public void UpdateRestaurant(Restaurant restaurant)
         {
-            var restau = _restaurantRepo.GetRestaurantById(restaurant.ID);
-            if (restau == null)
+            if (!_restaurantRepo.DoesRestaurantExist(restaurant.ID))
             {
-                throw new KeyNotFoundException("Klant niet gevonden");
+                throw ExceptionFactory.CreateRestaurantNotFoundException(restaurant.ID);
             }
+            var restau = _restaurantRepo.GetRestaurantById(restaurant.ID);
 
             restaurant.LocatieID = restau.LocatieID;
             restaurant.Locatie.ID = restau.LocatieID;

@@ -24,7 +24,6 @@ namespace ReservatieBeheer.Beheerder.API.Controllers
                 Naam = restaurantDto.Naam,
                 Locatie = new Locatie
                 {
-                    // Stel de Locatie eigenschappen in op basis van LocatieDto
                     Postcode = restaurantDto.Locatie.Postcode,
                     Gemeente = restaurantDto.Locatie.Gemeente,
                     Straatnaam = restaurantDto.Locatie.Straatnaam,
@@ -42,31 +41,49 @@ namespace ReservatieBeheer.Beheerder.API.Controllers
         [HttpDelete("{restaurantId}")]
         public IActionResult VerwijderRestaurant(int restaurantId)
         {
-            _restaurantService.VerwijderRestaurant(restaurantId);
-            return Ok($"Restaurant met ID {restaurantId} is verwijderd");
+            try
+            {
+                _restaurantService.VerwijderRestaurant(restaurantId);
+                return Ok($"Restaurant met ID {restaurantId} is verwijderd");
+            }
+            catch (Exception ex) when (ex.Message.Contains("Restaurant with ID"))
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpPut("{restaurantId}")]
         public IActionResult UpdateRestaurant(int restaurantId, [FromBody] RestaurantDto restaurantDto)
         {
-            var restaurant = new Restaurant
-            {
-                ID = restaurantId,
-                Naam = restaurantDto.Naam,
-                Locatie = new Locatie
+            try
+            {            
+                var restaurant = new Restaurant
                 {
-                    Gemeente = restaurantDto.Locatie.Gemeente,
-                    Huisnummerlabel = restaurantDto.Locatie.Huisnummerlabel,
-                    Postcode = restaurantDto.Locatie.Postcode,
-                    Straatnaam = restaurantDto.Locatie.Straatnaam
-                },
-                Keuken = restaurantDto.Keuken,
-                Telefoon = restaurantDto.Telefoon,
-                Email = restaurantDto.Email
-            };
+                    ID = restaurantId,
+                    Naam = restaurantDto.Naam,
+                    Locatie = new Locatie
+                    {
+                        Gemeente = restaurantDto.Locatie.Gemeente,
+                        Huisnummerlabel = restaurantDto.Locatie.Huisnummerlabel,
+                        Postcode = restaurantDto.Locatie.Postcode,
+                        Straatnaam = restaurantDto.Locatie.Straatnaam
+                    },
+                    Keuken = restaurantDto.Keuken,
+                    Telefoon = restaurantDto.Telefoon,
+                    Email = restaurantDto.Email
+                };
 
-            _restaurantService.UpdateRestaurant(restaurant);
-            return Ok("Restaurantgegevens bijgewerkt");
+                _restaurantService.UpdateRestaurant(restaurant);
+                return Ok("Restaurantgegevens bijgewerkt");
+            }
+            catch (Exception ex) when (ex.Message.Contains("Restaurant with ID"))
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Interne serverfout: " + ex.Message);
+            }
         }
     }
 }
