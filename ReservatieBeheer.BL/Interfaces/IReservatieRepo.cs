@@ -20,5 +20,6 @@ namespace ReservatieBeheer.BL.Interfaces
         bool DoesTafelExist(int tafelNummer);
         bool DoesReservationExist(int reservatieId);
         int TafelNummerFromReservatie(int reservatieId);
+        bool DoesRestaurantExist(int restaurantId);
     }
 }

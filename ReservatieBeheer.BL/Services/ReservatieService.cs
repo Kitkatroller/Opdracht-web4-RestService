@@ -115,6 +115,11 @@ namespace ReservatieBeheer.BL.Services
         }
         public IEnumerable<Reservatie> ZoekReservatiesPerRestaurant(int restaurantId, DateTime? beginDatum, DateTime? eindDatum)
         {
+            if (!_reservatieRepo.DoesRestaurantExist(restaurantId))
+            {
+                throw ExceptionFactory.CreateRestaurantNotFoundException(restaurantId);
+            }
+
             return _reservatieRepo.ZoekReservatiesPerRestaurant(restaurantId, beginDatum, eindDatum);
         }
 

@@ -196,5 +196,13 @@ namespace ReservatieBeheer.DL.Repositories
                 }
             }
         }
+
+        public bool DoesRestaurantExist(int restaurantId)
+        {
+            using (var _context = _dbContextFactory.CreateDbContext())
+            {
+                return _context.Restaurants.Any(restaurant => restaurant.ID == restaurantId);
+            }
+        }
     }
 }
