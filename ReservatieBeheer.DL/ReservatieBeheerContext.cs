@@ -55,7 +55,7 @@ namespace ReservatieBeheer.DL
 
             modelBuilder.Entity<TafelEF>()
                 .HasOne(t => t.Restaurant)
-                .WithMany(r => r.Tafels) // Zorg ervoor dat RestaurantEF een collectie Tafels heeft
+                .WithMany(r => r.Tafels)
                 .HasForeignKey(t => t.RestaurantID);
         }
     }

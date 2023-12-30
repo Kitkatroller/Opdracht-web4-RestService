@@ -6,8 +6,6 @@ namespace ReservatieBeheer.BL.Services
     public class GebruikerService
     {
         private readonly IGebruikerRepo _gebruikerRepo;
-
-        // Constructor met IGebruikerRepo injectie
         public GebruikerService(IGebruikerRepo gebruikerRepo)
         {
             _gebruikerRepo = gebruikerRepo;

@@ -31,8 +31,7 @@ namespace ReservatieBeheerConsoleApp
             }
             try
             {
-                // GET request: Haal een specifieke reservering op
-                var getResponse = await HaalReservatiesOp(1); // Voorbeeld: reserverings-ID 1
+                var getResponse = await HaalReservatiesOp(1); 
                 Console.WriteLine("GET Response: " + getResponse);
             }
             catch (HttpRequestException e)
@@ -47,7 +46,6 @@ namespace ReservatieBeheerConsoleApp
             string json = JsonConvert.SerializeObject(reservatie);
             StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            // Construct the URL with the provided klantId and tafelNummer
             string url = $"https://localhost:7175/api/Reservatie/maakReservatie/{klantId}/{tafelNummer}";
 
             HttpResponseMessage response = await client.PostAsync(url, content);
@@ -56,7 +54,6 @@ namespace ReservatieBeheerConsoleApp
         }
         static async Task<string> HaalReservatiesOp(int klantId)
         {
-            // Construct the URL with the query parameter klantId
             string url = $"https://localhost:7175/api/Reservatie/zoekReservaties?klantId={klantId}";
 
             HttpResponseMessage response = await client.GetAsync(url);

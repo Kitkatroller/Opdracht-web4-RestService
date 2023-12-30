@@ -37,7 +37,6 @@ namespace ReservatieBeheer.DL.Repositories
                 }
                 catch (Exception ex)
                 {
-                    // Overweeg een specifiekere foutafhandeling of log de fout
                     throw new Exception("Fout bij het toevoegen van het restaurant: " + ex.Message);
                 }
             }
@@ -50,10 +49,8 @@ namespace ReservatieBeheer.DL.Repositories
                 var restaurant = _context.Restaurants.Find(restaurantId);
                 if (restaurant != null)
                 {
-                    // Mark the restaurant as inactive instead of deleting
                     restaurant.IsActive = false;
 
-                    // Save the changes to the database
                     _context.SaveChanges();
                 }
             }
@@ -66,26 +63,22 @@ namespace ReservatieBeheer.DL.Repositories
             {
                 var restaurantEF = RestaurantMapper.MapToEfEntity(restaurant);
 
-                // Ophalen van het bestaande restaurant met de geladen Locatie
                 var bestaandRestaurant = _context.Restaurants
                     .Include(r => r.Locatie)
                     .FirstOrDefault(r => r.ID == restaurantEF.ID);
 
                 if (bestaandRestaurant != null)
                 {
-                    // Update de velden van het bestaande restaurant
                     _context.Entry(bestaandRestaurant).CurrentValues.SetValues(restaurantEF);
 
                     if (restaurantEF.Locatie != null && restaurantEF.Locatie.ID > 0)
                     {
-                        // Update de velden van de bestaande locatie
                         if (bestaandRestaurant.Locatie != null)
                         {
                             _context.Entry(bestaandRestaurant.Locatie).CurrentValues.SetValues(restaurantEF.Locatie);
                         }
                         else
                         {
-                            // Als de locatie nog niet bestaat in het bestaande restaurant
                             bestaandRestaurant.Locatie = restaurantEF.Locatie;
                         }
                     }
@@ -100,7 +93,7 @@ namespace ReservatieBeheer.DL.Repositories
             using (var _context = _dbContextFactory.CreateDbContext())
             {
                 var restaurantEf = _context.Restaurants
-                    .Include(r => r.Locatie) // Eager loading van de Locatie, indien nodig
+                    .Include(r => r.Locatie) 
                     .FirstOrDefault(r => r.ID == restaurantId && r.IsActive);
 
                 return restaurantEf != null ? RestaurantMapper.MapToBLModel(restaurantEf) : null;
@@ -156,7 +149,6 @@ namespace ReservatieBeheer.DL.Repositories
 
             using (var _context = _dbContextFactory.CreateDbContext())
             {
-                // Fetch restaurants with suitable tables directly
                 var resultaat = _context.Restaurants
                     .Select(r => new
                     {

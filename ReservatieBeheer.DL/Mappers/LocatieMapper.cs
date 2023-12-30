@@ -30,7 +30,7 @@ namespace ReservatieBeheer.DL.Mappers
 
             return new LocatieEF
             {
-                ID = LocatieEntry.ID, // Als ID auto-increment is, mag je deze weggelaten tijdens insert operaties.
+                ID = LocatieEntry.ID, 
                 Postcode = LocatieEntry.Postcode,
                 Gemeente = LocatieEntry.Gemeente,
                 Straatnaam = LocatieEntry.Straatnaam,

@@ -26,8 +26,6 @@ namespace ReservatieBeheer.DL.EFModels
         [Required(ErrorMessage = "Telefoonnummer is required")]
         [RegularExpression(@"^\d+$", ErrorMessage = "Telefoonnummer moet numeric zijn")]
         public string TelefoonNummer { get; set; }
-
-        // Nieuwe property voor uitschrijving
         public bool IsUitgeschreven { get; set; }
 
         public int LocatieID { get; set; }

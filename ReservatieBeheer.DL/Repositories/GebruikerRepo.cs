@@ -30,7 +30,6 @@ namespace ReservatieBeheer.DL.Repositories
                     _context.Locaties.Add(efKlant.Locatie);
                     _context.SaveChanges();
 
-                    // Update de locatie ID op de klant
                     efKlant.LocatieID = klant.Locatie.ID;
 
                     _context.Klanten.Add(efKlant);
@@ -38,7 +37,6 @@ namespace ReservatieBeheer.DL.Repositories
                 }
                 catch (Exception ex)
                 {
-                    // Overweeg een specifiekere foutafhandeling of log de fout
                     throw new Exception("Fout bij het toevoegen van de gebruiker: " + ex.Message);
                 }
             }
@@ -48,9 +46,8 @@ namespace ReservatieBeheer.DL.Repositories
         {
             using (var _context = _dbContextFactory.CreateDbContext())
             {
-                // Zoek de klant op basis van ID en laad de geassocieerde Locatie
                 var klantEF = _context.Klanten
-                    .Include(k => k.Locatie) // Eager loading van de Locatie
+                    .Include(k => k.Locatie)
                     .FirstOrDefault(k => k.KlantenNummer == klantenNummer && !k.IsUitgeschreven);
 
                 return KlantMapper.MapToBLModel(klantEF);
@@ -63,17 +60,14 @@ namespace ReservatieBeheer.DL.Repositories
             {
                 var klantEF = KlantMapper.MapToEfEntity(klant);
 
-                // Eager load de bestaande Klant met Locatie
                 var bestaandeKlant = _context.Klanten
                     .Include(k => k.Locatie)
                     .FirstOrDefault(k => k.KlantenNummer == klantEF.KlantenNummer);
 
                 if (bestaandeKlant != null)
                 {
-                    // Kopieer de waarden van klantEF naar bestaandeKlant
                     _context.Entry(bestaandeKlant).CurrentValues.SetValues(klantEF);
 
-                    // Indien nodig, update ook de gerelateerde Locatie
                     if (klantEF.Locatie != null && bestaandeKlant.Locatie != null)
                     {
                         _context.Entry(bestaandeKlant.Locatie).CurrentValues.SetValues(klantEF.Locatie);

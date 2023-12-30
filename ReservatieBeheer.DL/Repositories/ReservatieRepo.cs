@@ -59,14 +59,12 @@ namespace ReservatieBeheer.DL.Repositories
 
                 var eindTijd = nieuweDatum.AddHours(1.5);
 
-                // Controleer of de tafel beschikbaar is op de nieuwe datum en tijd
                 if (!_context.Reservaties.Any(r =>
                     r.TafelNummer == reservatie.TafelNummer &&
                     r.ID != reservatieId &&
                     ((r.Datum >= nieuweDatum && r.Datum < eindTijd) ||
                      (r.Datum.AddHours(1.5) > nieuweDatum && r.Datum < eindTijd))))
                 {
-                    // Update de reservatie
                     reservatie.Datum = nieuweDatum;
                     reservatie.AantalPlaatsen = nieuwAantalPlaatsen;
 
@@ -75,7 +73,6 @@ namespace ReservatieBeheer.DL.Repositories
                 }
                 else
                 {
-                    // Tafel niet beschikbaar op de nieuwe datum en tijd
                     return false;
                 }
             }
@@ -116,7 +113,6 @@ namespace ReservatieBeheer.DL.Repositories
 
                 var reservatieEFs = query.Where(r => r.KlantID == klantId).ToList();
 
-                // Map each ReservatieEF to Reservatie using the mapper
                 return reservatieEFs.Select(r => ReservatieMapper.MapToBLModel(r)).ToList();
             }
         }
@@ -141,7 +137,6 @@ namespace ReservatieBeheer.DL.Repositories
 
                 var reservatieEFs = query.ToList();
 
-                // Map each ReservatieEF to Reservatie using the mapper
                 return reservatieEFs.Select(r => ReservatieMapper.MapToBLModel(r)).ToList();
             }
         }

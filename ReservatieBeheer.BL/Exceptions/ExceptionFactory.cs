@@ -57,5 +57,4 @@ namespace ReservatieBeheer.BL.Exceptions
             return new Exception($"Restaurant with ID {restaurantId} does not exist.");
         }
     }
-
 }

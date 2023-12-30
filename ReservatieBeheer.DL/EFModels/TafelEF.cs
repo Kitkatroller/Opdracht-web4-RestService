@@ -17,7 +17,6 @@ namespace ReservatieBeheer.DL.EFModels
         [Range(1, int.MaxValue, ErrorMessage = "Aantal plaatsen moet minstens 1 zijn")]
         public int Aantal { get; set; }
 
-        // Nieuwe foreign key voor Restaurant
         public int RestaurantID { get; set; }
         [ForeignKey("RestaurantID")]
         public RestaurantEF Restaurant { get; set; }

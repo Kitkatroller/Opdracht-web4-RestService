@@ -21,23 +21,17 @@ namespace ReservatieBeheer.BL.Models
         public Locatie Locatie { get; set; }
 
         public ICollection<Reservatie> Reservaties { get; set; }
-
-        //Constructors
-        // Parameterloze constructor
         public Klant()
         {
             Reservaties = new List<Reservatie>();
         }
-
-        // Constructor met parameters
         public Klant(string naam, string email, string telefoonNummer, Locatie locatie)
-            : this()  // Roept de parameterloze constructor aan
+            : this()
         {
             Naam = naam;
             Email = email;
             TelefoonNummer = telefoonNummer;
             Locatie = locatie;
-            // Reservaties wordt geïnitialiseerd in de parameterloze constructor
         }
     }
 }
