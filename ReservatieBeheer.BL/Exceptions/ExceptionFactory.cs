@@ -44,6 +44,14 @@ namespace ReservatieBeheer.BL.Exceptions
         {
             return new Exception($"Invalid Number of Places: The provided number of places '{nieuwAantalPlaatsen}' is less than 1.");
         }
+        public static Exception CreateInvalidPostcodeException(string message)
+        {
+            return new Exception($"Invalid Postcode: {message}");
+        }
+        public static Exception CreateInvalidParameterException(string message)
+        {
+            return new Exception($"Invalid Parameter: {message}");
+        }
     }
 
 }
