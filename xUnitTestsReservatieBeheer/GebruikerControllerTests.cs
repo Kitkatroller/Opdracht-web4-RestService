@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using ReservatieBeheer.BL.Interfaces;
 using ReservatieBeheer.BL.Models;
@@ -22,12 +23,13 @@ namespace xUnitTestsReservatieBeheer
         private readonly GebruikerController _controller;
         private readonly GebruikerDto _dummyGebruikerDto;
         private readonly GebruikerDto _dummyGebruikerInvalidDto;
+        private readonly Mock<ILogger<GebruikerController>> mockLogger;
 
         public GebruikerControllerTests()
         {
             mockRepo = new Mock<IGebruikerRepo>();
             _gebruikerService = new GebruikerService(mockRepo.Object);
-            _controller = new GebruikerController(_gebruikerService);
+            _controller = new GebruikerController(_gebruikerService, mockLogger.Object);
 
             // Test data
             _dummyGebruikerDto = new GebruikerDto

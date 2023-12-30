@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using ReservatieBeheer.BL.Models;
 using ReservatieBeheer.BL.Services;
 using ReservatieBeheer.DL.Interfaces;
+using Serilog;
 
 namespace ReservatieBeheer.Beheerder.API
 {
@@ -15,10 +16,14 @@ namespace ReservatieBeheer.Beheerder.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Configureer logging
-            builder.Logging.ClearProviders();
-            builder.Logging.AddConsole();
-            builder.Logging.AddDebug();
+            // Configureren van Serilog
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(builder.Configuration)
+                .WriteTo.Console()
+                .WriteTo.File("LogsBeheerderAPI.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
+
+            builder.Host.UseSerilog();
 
             // Add services to the container.
             builder.Services.AddSingleton<IDbContextFactory<ReservatieBeheerContext>>(serviceProvider =>

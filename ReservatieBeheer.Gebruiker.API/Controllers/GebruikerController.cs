@@ -10,15 +10,18 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
     public class GebruikerController : ControllerBase
     {
         private readonly GebruikerService _gebruikerService;
+        private readonly ILogger<GebruikerController> _logger;
 
-        public GebruikerController(GebruikerService gebruikerService)
+        public GebruikerController(GebruikerService gebruikerService, ILogger<GebruikerController> logger)
         {
             _gebruikerService = gebruikerService;
+            _logger = logger;
         }
 
         [HttpPost("registreren")]
         public IActionResult RegistreerGebruiker(GebruikerDto gebruikerDto)
         {
+            _logger.LogInformation("RegistreerGebruiker actie aangeroepen");
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -42,6 +45,7 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Fout bij het registreren van gebruiker: {Message}", ex.Message);
                 return StatusCode(500, "Interne serverfout: " + ex.Message);
             }
         }
@@ -49,6 +53,8 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
         [HttpPut("update/{klantenNummer}")]
         public IActionResult UpdateGebruiker(int klantenNummer, [FromBody] GebruikerDto gebruikerDto)
         {
+            _logger.LogInformation($"UpdateGebruiker actie aangeroepen voor klantnummer {klantenNummer}");
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -79,6 +85,8 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
         [HttpPut("uitschrijven/{klantenNummer}")]
         public IActionResult UitschrijvenGebruiker(int klantenNummer)
         {
+            _logger.LogInformation($"UitschrijvenGebruiker actie aangeroepen voor klantnummer {klantenNummer}");
+
             try
             {
                 _gebruikerService.UitschrijvenGebruiker(klantenNummer);
