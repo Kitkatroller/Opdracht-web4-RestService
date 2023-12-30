@@ -58,8 +58,7 @@ namespace ReservatieBeheer.DL.Repositories
             {
                 var reservatie = _context.Reservaties.FirstOrDefault(r => r.ID == reservatieId);
                 if (reservatie == null)
-                {
-                    // Reservatie niet gevonden
+                {                    
                     return false;
                 }
 
@@ -152,6 +151,25 @@ namespace ReservatieBeheer.DL.Repositories
 
                 // Map each ReservatieEF to Reservatie using the mapper
                 return reservatieEFs.Select(r => ReservatieMapper.MapToBLModel(r)).ToList();
+            }
+        }
+
+        public bool DoesKlantExist(int klantenNummer)
+        {
+            using (var _context = _dbContextFactory.CreateDbContext())
+            {
+                var klantExists = _context.Klanten
+                    .Any(k => k.KlantenNummer == klantenNummer && !k.IsUitgeschreven);
+
+                return klantExists;
+            }
+        }
+
+        public bool DoesTafelExist(int tafelNummer)
+        {
+            using (var _context = _dbContextFactory.CreateDbContext())
+            {
+                return _context.Tafels.Any(t => t.TafelNummer == tafelNummer);
             }
         }
     }

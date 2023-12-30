@@ -1,4 +1,5 @@
-﻿using ReservatieBeheer.BL.Interfaces;
+﻿using ReservatieBeheer.BL.Exceptions;
+using ReservatieBeheer.BL.Interfaces;
 using ReservatieBeheer.BL.Models;
 using System;
 using System.Collections.Generic;
@@ -19,19 +20,24 @@ namespace ReservatieBeheer.BL.Services
 
         public void MaakReservatie(int klantId, int aantalPlaatsen, DateTime datum, int tafelNummer )
         {
-            // Controleer of de datum een exact uur of half uur is
             if (datum.Minute != 0 && datum.Minute != 30)
             {
-                throw new ArgumentException("Reservatietijdstip moet een exact uur of een half uur zijn.");
+                throw ExceptionFactory.CreateInvalidReservationTimeException("Reservatietijdstip moet een exact uur of een half uur zijn.");
             }
 
-            // Bereken het eindtijdstip van de reservatie (1.5 uur na het begin)
-            var eindTijd = datum.AddHours(1.5);
-
-            // Controleer de beschikbaarheid van de tafel
-            if (!IsTafelBeschikbaar(tafelNummer, datum, eindTijd))
+            if (!IsTafelBeschikbaar(tafelNummer, datum, datum.AddHours(1.5)))
             {
-                throw new InvalidOperationException("Tafel is niet beschikbaar voor de opgegeven tijd.");
+                throw ExceptionFactory.CreateTableNotAvailableException("Tafel is niet beschikbaar voor de opgegeven tijd.");
+            }
+
+            if (!_reservatieRepo.DoesKlantExist(klantId))
+            {
+                throw ExceptionFactory.CreateCustomerNotFoundException(klantId);
+            }
+
+            if (!_reservatieRepo.DoesTafelExist(tafelNummer))
+            {
+                throw ExceptionFactory.CreateTableNotFoundException(tafelNummer);
             }
 
             try

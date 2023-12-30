@@ -19,26 +19,36 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
         public IActionResult MaakReservatie(int klantId, ReservatieDto reservatie, int TafelNummer)
         {
             if (!ModelState.IsValid)
-            {               
+            {
                 return BadRequest(ModelState);
             }
+
             try
             {
-                _reservatieService.MaakReservatie(klantId,
-                    reservatie.AantalPlaatsen,
-                    reservatie.Datum,
-                    TafelNummer);
+                _reservatieService.MaakReservatie(klantId, reservatie.AantalPlaatsen, reservatie.Datum, TafelNummer);
                 return Ok("Reservatie gemaakt");
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Interne serverfout: " + ex.Message);
+                if (ex.Message.StartsWith("Invalid Reservation Time"))
+                {
+                    return BadRequest(ex.Message);
+                }
+                else if (ex.Message.StartsWith("Table Not Available"))
+                {
+                    return Conflict(ex.Message);
+                }
+                else if (ex.Message.StartsWith("Customer Not Found"))
+                {
+                    return NotFound(ex.Message);
+                }
+                else
+                {
+                    return StatusCode(500, "Interne serverfout: " + ex.Message);
+                }
             }
         }
+
         [HttpPut("pasReservatieAan/{reservatieId}")]
         public IActionResult PasReservatieAan(int reservatieId, ReservatieDto reservatie)
         {

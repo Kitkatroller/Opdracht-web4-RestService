@@ -22,6 +22,10 @@ namespace ReservatieBeheer.BL.Exceptions
         {
             return new Exception($"Customer Not Found: Klant with ID {klantId} does not exist.");
         }
+        public static Exception CreateTableNotFoundException(int tafelNummer)
+        {
+            return new Exception($"Table Not Found: Table with number {tafelNummer} does not exist.");
+        }
     }
 
 }
