@@ -34,6 +34,10 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
                 {
                     return BadRequest(ex.Message);
                 }
+                else if (ex.Message.Contains("Invalid New Date"))
+                {
+                    return BadRequest(ex.Message);
+                }
                 else if (ex.Message.StartsWith("Table Not Available"))
                 {
                     return Conflict(ex.Message);
@@ -52,13 +56,41 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
         [HttpPut("pasReservatieAan/{reservatieId}")]
         public IActionResult PasReservatieAan(int reservatieId, ReservatieDto reservatie)
         {
-            if (!_reservatieService.PasReservatieAan(reservatieId, reservatie.Datum, reservatie.AantalPlaatsen))
+            try
             {
-                return BadRequest("Aanpassing van de reservatie is niet mogelijk. Controleer de beschikbaarheid van de tafel op de nieuwe datum en tijd.");
+                _reservatieService.PasReservatieAan(reservatieId, reservatie.Datum, reservatie.AantalPlaatsen);
+                return Ok("Reservatie succesvol aangepast");
             }
-
-            return Ok("Reservatie succesvol aangepast");
+            catch (Exception ex)
+            {
+                if (ex.Message.StartsWith("Invalid Reservation Time"))
+                {
+                    return BadRequest(ex.Message);
+                }
+                else if (ex.Message.Contains("Reservation Not Found"))
+                {
+                    return NotFound(ex.Message);
+                }
+                else if (ex.Message.Contains("Invalid New Date"))
+                {
+                    return BadRequest(ex.Message);
+                }
+                else if (ex.Message.Contains("Invalid Number of Places"))
+                {
+                    return BadRequest(ex.Message);
+                }
+                else if (ex.Message.Contains("Table Not Available"))
+                {
+                    return BadRequest(ex.Message);
+                }
+                else
+                {
+                    return StatusCode(500, "Interne serverfout: " + ex.Message);
+                }
+            }
         }
+
+
 
         [HttpDelete("annuleerReservatie/{reservatieId}")]
         public IActionResult AnnuleerReservatie(int reservatieId)

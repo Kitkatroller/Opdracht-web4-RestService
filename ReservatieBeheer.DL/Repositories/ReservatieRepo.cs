@@ -40,10 +40,6 @@ namespace ReservatieBeheer.DL.Repositories
         {
             using (var _context = _dbContextFactory.CreateDbContext())
             {
-                // Voer een query uit om te controleren of er reservaties zijn die overlappen
-                // met de opgegeven tijden voor de specifieke tafel
-                // Dit is een voorbeeldquery en moet worden aangepast aan je database schema
-
                 return !_context.Reservaties.Any(r =>
                 r.TafelNummer == tafelNummer &&
                 ((r.Datum >= beginTijd && r.Datum < eindTijd) ||
@@ -170,6 +166,29 @@ namespace ReservatieBeheer.DL.Repositories
             using (var _context = _dbContextFactory.CreateDbContext())
             {
                 return _context.Tafels.Any(t => t.TafelNummer == tafelNummer);
+            }
+        }
+        public bool DoesReservationExist(int reservatieId)
+        {
+            using (var _context = _dbContextFactory.CreateDbContext())
+            {
+                return _context.Reservaties.Any(r => r.ID == reservatieId);
+            }
+        }
+
+        public int TafelNummerFromReservatie(int reservatieId)
+        {
+            using (var _context = _dbContextFactory.CreateDbContext())
+            {
+                var reservatie = _context.Reservaties.FirstOrDefault(r => r.ID == reservatieId);
+                if (reservatie != null)
+                {
+                    return reservatie.TafelNummer;
+                }
+                else
+                {
+                    throw new Exception($"No reservation found with ID {reservatieId}.");
+                }
             }
         }
     }

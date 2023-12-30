@@ -17,5 +17,7 @@ namespace ReservatieBeheer.BL.Interfaces
         IEnumerable<Reservatie> ZoekReservatiesPerRestaurant(int restaurantId, DateTime? beginDatum, DateTime? eindDatum);
         bool DoesKlantExist(int klantenNummer);
         bool DoesTafelExist(int tafelNummer);
+        bool DoesReservationExist(int reservatieId);
+        int TafelNummerFromReservatie(int reservatieId);
     }
 }

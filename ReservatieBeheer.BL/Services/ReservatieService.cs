@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ReservatieBeheer.BL.Services
 {
@@ -40,6 +41,11 @@ namespace ReservatieBeheer.BL.Services
                 throw ExceptionFactory.CreateTableNotFoundException(tafelNummer);
             }
 
+            if (datum < DateTime.Now)
+            {
+                throw ExceptionFactory.CreateInvalidNewDateException(datum);
+            }
+
             try
             {
                 var nieuweReservatie = new Reservatie
@@ -63,6 +69,33 @@ namespace ReservatieBeheer.BL.Services
         }
         public bool PasReservatieAan(int reservatieId, DateTime nieuweDatum, int nieuwAantalPlaatsen)
         {
+            if (nieuweDatum.Minute != 0 && nieuweDatum.Minute != 30)
+            {
+                throw ExceptionFactory.CreateInvalidReservationTimeException("Reservatietijdstip moet een exact uur of een half uur zijn.");
+            }
+
+            if (!_reservatieRepo.DoesReservationExist(reservatieId))
+            {
+                throw ExceptionFactory.CreateReservationNotFoundException(reservatieId);
+            }
+
+
+            int tafelNummer = _reservatieRepo.TafelNummerFromReservatie(reservatieId);
+            if (!IsTafelBeschikbaar(tafelNummer, nieuweDatum, nieuweDatum.AddHours(1.5)))
+            {
+                throw ExceptionFactory.CreateTableNotAvailableException("Tafel is niet beschikbaar voor de opgegeven tijd.");
+            }
+
+            if (nieuweDatum < DateTime.Now)
+            {
+                throw ExceptionFactory.CreateInvalidNewDateException(nieuweDatum);
+            }
+
+            if (nieuwAantalPlaatsen < 1)
+            {
+                throw ExceptionFactory.CreateInvalidNumberOfPlacesException(nieuwAantalPlaatsen);
+            }
+
             return _reservatieRepo.PasReservatieAan(reservatieId, nieuweDatum, nieuwAantalPlaatsen);
         }
 

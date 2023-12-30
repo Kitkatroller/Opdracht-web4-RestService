@@ -26,6 +26,24 @@ namespace ReservatieBeheer.BL.Exceptions
         {
             return new Exception($"Table Not Found: Table with number {tafelNummer} does not exist.");
         }
+        public static Exception CreateInvalidTimeRangeException(DateTime beginTijd, DateTime eindTijd)
+        {
+            return new Exception($"Invalid Time Range: The start time {beginTijd} cannot be after the end time {eindTijd}.");
+        }
+        public static Exception CreateReservationNotFoundException(int reservatieId)
+        {
+            return new Exception($"Reservation Not Found: Reservation with ID {reservatieId} does not exist.");
+        }
+
+        public static Exception CreateInvalidNewDateException(DateTime nieuweDatum)
+        {
+            return new Exception($"Invalid New Date: The provided new date '{nieuweDatum}' is in the past.");
+        }
+
+        public static Exception CreateInvalidNumberOfPlacesException(int nieuwAantalPlaatsen)
+        {
+            return new Exception($"Invalid Number of Places: The provided number of places '{nieuwAantalPlaatsen}' is less than 1.");
+        }
     }
 
 }
