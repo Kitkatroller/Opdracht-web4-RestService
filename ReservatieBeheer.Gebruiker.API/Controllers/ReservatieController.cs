@@ -90,8 +90,6 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
             }
         }
 
-
-
         [HttpDelete("annuleerReservatie/{reservatieId}")]
         public IActionResult AnnuleerReservatie(int reservatieId)
         {
@@ -106,13 +104,35 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
         [HttpGet("zoekReservaties")]
         public IActionResult ZoekReservaties(int klantId, DateTime? beginDatum, DateTime? eindDatum)
         {
-            var reservaties = _reservatieService.ZoekReservaties(klantId, beginDatum, eindDatum);
-            if (reservaties == null || !reservaties.Any())
+            try
             {
-                return NotFound("Geen reservaties gevonden.");
-            }
+                var reservaties = _reservatieService.ZoekReservaties(klantId, beginDatum, eindDatum);
 
-            return Ok(reservaties);
+                if (reservaties == null || !reservaties.Any())
+                {
+                    return NotFound("Geen reservaties gevonden.");
+                }
+
+                var reservatieDtos = reservaties.Select(r => new ReservatieDto
+                {
+                    AantalPlaatsen = r.AantalPlaatsen,
+                    Datum = r.Datum
+                }).ToList();
+
+                return Ok(reservatieDtos);
+            }
+            catch (Exception ex) 
+            {
+                if (ex.Message.StartsWith("Customer Not Found"))
+                {
+                    return NotFound(ex.Message);
+                }
+                else
+                {
+                    return StatusCode(500, "Interne serverfout: " + ex.Message);
+                }
+
+            }
         }
     }
 }

@@ -44,8 +44,7 @@ namespace ReservatieBeheer.DL.Repositories
                 r.TafelNummer == tafelNummer &&
                 ((r.Datum >= beginTijd && r.Datum < eindTijd) ||
                 (r.Datum.AddHours(1.5) > beginTijd && r.Datum < eindTijd)));
-            }
-                
+            }                
         }
 
         public bool PasReservatieAan(int reservatieId, DateTime nieuweDatum, int nieuwAantalPlaatsen)
@@ -89,11 +88,9 @@ namespace ReservatieBeheer.DL.Repositories
                 var reservatie = _context.Reservaties.FirstOrDefault(r => r.ID == reservatieId);
                 if (reservatie == null || reservatie.Datum <= DateTime.Now)
                 {
-                    // Reservatie niet gevonden of is al verstreken
                     return false;
                 }
 
-                // Annuleer de reservatie (dit kan verwijderen of een statuswijziging zijn)
                 _context.Reservaties.Remove(reservatie);
                 _context.SaveChanges();
 
@@ -124,7 +121,6 @@ namespace ReservatieBeheer.DL.Repositories
             }
         }
 
-
         public IEnumerable<Reservatie> ZoekReservatiesPerRestaurant(int restaurantId, DateTime? beginDatum, DateTime? eindDatum)
         {
             using (var _context = _dbContextFactory.CreateDbContext())
@@ -149,7 +145,6 @@ namespace ReservatieBeheer.DL.Repositories
                 return reservatieEFs.Select(r => ReservatieMapper.MapToBLModel(r)).ToList();
             }
         }
-
         public bool DoesKlantExist(int klantenNummer)
         {
             using (var _context = _dbContextFactory.CreateDbContext())
@@ -160,6 +155,16 @@ namespace ReservatieBeheer.DL.Repositories
                 return klantExists;
             }
         }
+        public bool DoesKlantExistEvenIfUnsubed(int klantenNummer)
+        {
+            using (var _context = _dbContextFactory.CreateDbContext())
+            {
+                var klantExists = _context.Klanten
+                    .Any(k => k.KlantenNummer == klantenNummer);
+
+                return klantExists;
+            }
+        }        
 
         public bool DoesTafelExist(int tafelNummer)
         {

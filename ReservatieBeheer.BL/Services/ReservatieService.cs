@@ -101,11 +101,16 @@ namespace ReservatieBeheer.BL.Services
 
         public bool AnnuleerReservatie(int reservatieId)
         {
-            return _reservatieRepo.AnnuleerReservatie(reservatieId);
+            return _reservatieRepo.AnnuleerReservatie(reservatieId);            
         }
 
         public IEnumerable<Reservatie> ZoekReservaties(int klantId, DateTime? beginDatum, DateTime? eindDatum)
         {
+            if (!_reservatieRepo.DoesKlantExistEvenIfUnsubed(klantId))
+            {
+                throw ExceptionFactory.CreateCustomerNotFoundException(klantId);
+            }
+
             return _reservatieRepo.ZoekReservaties(klantId, beginDatum, eindDatum);
         }
         public IEnumerable<Reservatie> ZoekReservatiesPerRestaurant(int restaurantId, DateTime? beginDatum, DateTime? eindDatum)
