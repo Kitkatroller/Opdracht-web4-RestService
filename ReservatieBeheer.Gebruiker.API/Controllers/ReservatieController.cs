@@ -15,7 +15,7 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
             _reservatieService = reservatieService;
         }
 
-        [HttpPost("maakReservatie/{klantId}")]
+        [HttpPost("maakReservatie/{klantId}/{TafelNummer}")]
         public IActionResult MaakReservatie(int klantId, ReservatieDto reservatie, int TafelNummer)
         {
             if (!ModelState.IsValid)

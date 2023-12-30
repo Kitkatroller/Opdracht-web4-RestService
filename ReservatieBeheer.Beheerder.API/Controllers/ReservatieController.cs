@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using ReservatieBeheer.Beheerder.API.DTOs;
 using ReservatieBeheer.BL.Services;
 
@@ -9,10 +10,12 @@ namespace ReservatieBeheer.Beheerder.API.Controllers
     public class ReservatieController : Controller
     {
         private readonly ReservatieService _reservatieService;
+        private readonly ILogger<ReservatieController> _logger;
 
-        public ReservatieController(ReservatieService reservatieService)
+        public ReservatieController(ReservatieService reservatieService, ILogger<ReservatieController> logger)
         {
             _reservatieService = reservatieService;
+            _logger = logger;
         }
 
         [HttpGet("zoekReservatiesPerRestaurant")]
@@ -20,6 +23,7 @@ namespace ReservatieBeheer.Beheerder.API.Controllers
         {
             try
             {
+                _logger.LogInformation($"Zoeken naar reservaties voor restaurant ID {restaurantId}.");
                 var reservaties = _reservatieService.ZoekReservatiesPerRestaurant(restaurantId, beginDatum, eindDatum);
                 if (reservaties == null || !reservaties.Any())
                 {
@@ -36,6 +40,7 @@ namespace ReservatieBeheer.Beheerder.API.Controllers
             }
             catch (Exception ex) when (ex.Message.Contains("Restaurant with ID"))
             {
+                _logger.LogError(ex, $"Fout bij het zoeken naar reservaties: {ex.Message}");
                 return NotFound(ex.Message);
             }
 
