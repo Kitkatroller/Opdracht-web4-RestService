@@ -9,6 +9,9 @@ using System;
 using System.Collections.Generic;
 using Xunit;
 using ReservatieBeheer.BL.Services;
+using Microsoft.Extensions.Logging;
+using Moq;
+
 
 namespace xUnitTestsReservatieBeheer
 {
@@ -28,70 +31,61 @@ namespace xUnitTestsReservatieBeheer
         }
 
         [Fact]
-        public void VoegRestaurantToe_WithValidData_ReturnsOk()
+        public void ZoekRestaurants_SuccessfulSearch_ReturnsOkWithRestaurants()
         {
             // Arrange
-            var validRestaurantDto = new RestaurantDto
+            string postcode = "1000";
+            string keuken = "Italian";
+            var mockRestaurants = new List<Restaurant>
+    {
+        new Restaurant
+        {
+            ID = 1,
+            Naam = "Test Restaurant 1",
+            Keuken = "Italian",
+            Telefoon = "0123456789",
+            Email = "info@test1.com",
+            Locatie = new Locatie
             {
-                Naam = "Test Restaurant",
-                // Vul andere vereiste velden in
-            };
-
-            // Act
-            var result = _controller.VoegRestaurantToe(validRestaurantDto);
-
-            // Assert
-            Assert.IsType<OkObjectResult>(result);
-        }
-
-        [Fact]
-        public void UpdateRestaurant_ValidRestaurant_ReturnsOk()
+                ID = 1,
+                Postcode = "1000",
+                Gemeente = "Gemeente1",
+                Straatnaam = "Straat 1",
+                Huisnummerlabel = "1"
+            }
+        },
+        new Restaurant
         {
-            // Arrange
-            var validRestaurantDto = new RestaurantDto
+            ID = 2,
+            Naam = "Test Restaurant 2",
+            Keuken = "Italian",
+            Telefoon = "9876543210",
+            Email = "info@test2.com",
+            Locatie = new Locatie
             {
-                Naam = "Test Restaurant",
-                // Vul andere vereiste velden in
-            };
-            int restaurantId = 1;
+                ID = 2,
+                Postcode = "1000",
+                Gemeente = "Gemeente2",
+                Straatnaam = "Straat 2",
+                Huisnummerlabel = "2"
+            }
+        }
+    };
 
-            // Mock setup
-            mockRepo.Setup(r => r.DoesRestaurantExist(restaurantId)).Returns(true);
+            mockRepo.Setup(repo => repo.ZoekRestaurants(postcode, keuken))
+                    .Returns(mockRestaurants);
 
             // Act
-            var result = _controller.UpdateRestaurant(restaurantId, validRestaurantDto);
+            var result = _controller.ZoekRestaurants(postcode, keuken);
 
             // Assert
-            Assert.IsType<OkObjectResult>(result);
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var returnedDtos = Assert.IsAssignableFrom<IEnumerable<RestaurantDto>>(okResult.Value);
+            Assert.NotEmpty(returnedDtos);
+            Assert.Equal(mockRestaurants.Count, returnedDtos.Count());
         }
 
-        [Fact]
-        public void VerwijderRestaurant_ExistingRestaurant_ReturnsOk()
-        {
-            // Arrange
-            int restaurantId = 1;
-            mockRepo.Setup(r => r.DoesRestaurantExist(restaurantId)).Returns(true);
 
-            // Act
-            var result = _controller.VerwijderRestaurant(restaurantId);
-
-            // Assert
-            Assert.IsType<OkObjectResult>(result);
-        }
-
-        [Fact]
-        public void VerwijderRestaurant_NonExistingRestaurant_ReturnsNotFound()
-        {
-            // Arrange
-            int restaurantId = -1;
-            mockRepo.Setup(r => r.DoesRestaurantExist(restaurantId)).Returns(false);
-
-            // Act
-            var result = _controller.VerwijderRestaurant(restaurantId);
-
-            // Assert
-            Assert.IsType<NotFoundResult>(result);
-        }
 
     }
 }

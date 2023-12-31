@@ -11,9 +11,9 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
     public class RestaurantController : Controller
     {
         private readonly RestaurantService _restaurantService;
-        private readonly ILogger<GebruikerController> _logger;
+        private readonly ILogger<RestaurantController> _logger;
 
-        public RestaurantController(RestaurantService restaurantService, ILogger<GebruikerController> logger)
+        public RestaurantController(RestaurantService restaurantService, ILogger<RestaurantController> logger)
         {
             _restaurantService = restaurantService;
             _logger = logger;
