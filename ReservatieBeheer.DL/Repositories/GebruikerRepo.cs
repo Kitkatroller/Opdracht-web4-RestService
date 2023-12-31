@@ -50,6 +50,14 @@ namespace ReservatieBeheer.DL.Repositories
                     .Include(k => k.Locatie)
                     .FirstOrDefault(k => k.KlantenNummer == klantenNummer && !k.IsUitgeschreven);
 
+                // Controleer of de klant bestaat in de database
+                if (klantEF == null)
+                {
+                    // Geen klant gevonden, retourneer null
+                    return null;
+                }
+
+                // Klant gevonden, retourneer de gemapte klant
                 return KlantMapper.MapToBLModel(klantEF);
             }
         }

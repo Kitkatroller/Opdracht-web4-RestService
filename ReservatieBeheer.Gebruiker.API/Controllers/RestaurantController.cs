@@ -11,15 +11,19 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
     public class RestaurantController : Controller
     {
         private readonly RestaurantService _restaurantService;
+        private readonly ILogger<GebruikerController> _logger;
 
-        public RestaurantController(RestaurantService restaurantService)
+        public RestaurantController(RestaurantService restaurantService, ILogger<GebruikerController> logger)
         {
             _restaurantService = restaurantService;
+            _logger = logger;
         }
 
         [HttpGet("zoek")]
         public IActionResult ZoekRestaurants(string postcode, string keuken)
         {
+            _logger.LogInformation($"ZoekRestaurants aangeroepen met postcode: {postcode}, keuken: {keuken}");
+
             try
             {
                 var restaurants = _restaurantService.ZoekRestaurants(postcode, keuken);
@@ -41,6 +45,8 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
             }
             catch (Exception ex) when (ex.Message.StartsWith("Invalid Postcode"))
             {
+                _logger.LogError($"Fout bij ZoekRestaurants: {ex.Message}");
+
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)
@@ -65,6 +71,8 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
         [HttpGet("beschikbaar")]
         public ActionResult<IEnumerable<BeschikbaarRestaurantDto>> VindBeschikbareRestaurants(int aantalPersonen, DateTime tijd)
         {
+            _logger.LogInformation($"VindBeschikbareRestaurants aangeroepen met aantalPersonen: {aantalPersonen}, tijd: {tijd}");
+
             try
             {
                 var beschikbareRestaurants = _restaurantService.VindBeschikbareRestaurants(aantalPersonen, tijd);
@@ -80,6 +88,8 @@ namespace ReservatieBeheer.Gebruiker.API.Controllers
             }
             catch (Exception ex) when (ex.Message.StartsWith("Invalid Parameter"))
             {
+                _logger.LogError($"Fout bij VindBeschikbareRestaurants: {ex.Message}");
+
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)

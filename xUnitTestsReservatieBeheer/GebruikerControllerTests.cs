@@ -23,51 +23,115 @@ namespace xUnitTestsReservatieBeheer
         private readonly GebruikerController _controller;
         private readonly GebruikerDto _dummyGebruikerDto;
         private readonly GebruikerDto _dummyGebruikerInvalidDto;
+        private readonly GebruikerDto validGebruikerDto; 
+        private readonly GebruikerDto invalidGebruikerDto;
         private readonly Mock<ILogger<GebruikerController>> mockLogger;
+        private readonly Klant geldigeKlant;
 
         public GebruikerControllerTests()
         {
             mockRepo = new Mock<IGebruikerRepo>();
+            mockLogger = new Mock<ILogger<GebruikerController>>();
             _gebruikerService = new GebruikerService(mockRepo.Object);
             _controller = new GebruikerController(_gebruikerService, mockLogger.Object);
 
-            // Test data
-            _dummyGebruikerDto = new GebruikerDto
+            var validGebruikerDto = new GebruikerDto
             {
-                Naam = "Jane Doe",
-                Email = "jan@example.com",
+                Naam = "Jan Jansen",
+                Email = "janjansen@example.com",
                 TelefoonNummer = "0123456789",
                 Locatie = new LocatieDto
                 {
-                    Gemeente = "Amsterdam",
-                    Huisnummerlabel = "123A",
-                    Postcode = "1000",
+                    Gemeente = "Gent",
+                    Huisnummerlabel = "12B",
+                    Postcode = "9000",
                     Straatnaam = "Hoofdstraat"
                 }
             };
-            _dummyGebruikerInvalidDto = new GebruikerDto
+
+            var invalidGebruikerDto = new GebruikerDto
             {
-                Naam = "Jane Doe",
-                Email = "jaaaaaom",
-                TelefoonNummer = "aaaaa"
+                Naam = "Jan Jansen",
+                Email = "jan.jansen@invalid",
+                TelefoonNummer = "abcde12345",
+                Locatie = new LocatieDto
+                {
+                    Gemeente = "Gent",
+                    Huisnummerlabel = "12B",
+                    Postcode = "9000",
+                    Straatnaam = "Hoofdstraat"
+                }
             };
 
-
+            _dummyGebruikerInvalidDto = new GebruikerDto
+            {
+                Naam = "Jan Jansen",
+                Email = "jan.jansen@invalid",
+                TelefoonNummer = "abcde12345",
+                Locatie = new LocatieDto
+                {
+                    Gemeente = "Gent",
+                    Huisnummerlabel = "12B",
+                    Postcode = "9000",
+                    Straatnaam = "Hoofdstraat"
+                }
+            };
         }
 
-        // Test methods
+
         [Fact]
-        public void RegistreerGebruiker_WithValidModel_ReturnsOk()
+        public void RegistreerGebruiker_WithValidKlant_ReturnsOk()
         {
+            Klant geldigeKlant = new Klant(
+           naam: "Jan Jansen",
+           email: "jan@example.com",
+           telefoonNummer: "0123456789",
+           locatie: new Locatie
+           {
+               Gemeente = "Gent",
+               Straatnaam = "Hoofdstraat",
+               Huisnummerlabel = "1A",
+               Postcode = "9000"
+           }
+            );
+
+
             // Arrange
             _controller.ModelState.Clear();
+            mockRepo.Setup(repo => repo.VoegGebruikerToe(It.Is<Klant>(klant =>
+                klant.Naam == geldigeKlant.Naam &&
+                klant.Email == geldigeKlant.Email &&
+                klant.TelefoonNummer == geldigeKlant.TelefoonNummer &&
+                klant.Locatie == geldigeKlant.Locatie)))
+                .Verifiable();
 
             // Act
-            var result = _controller.RegistreerGebruiker(_dummyGebruikerDto);
+            var result = _controller.RegistreerGebruiker(MapToGebruikerDto(geldigeKlant));
 
             // Assert
             Assert.IsType<OkObjectResult>(result);
+            mockRepo.Verify(repo => repo.VoegGebruikerToe(It.IsAny<Klant>()), Times.Once());
         }
+
+        private GebruikerDto MapToGebruikerDto(Klant klant)
+        {
+            return new GebruikerDto
+            {
+                Naam = klant.Naam,
+                Email = klant.Email,
+                TelefoonNummer = klant.TelefoonNummer,
+                Locatie = new LocatieDto
+                {
+                    Gemeente = klant.Locatie.Gemeente,
+                    Straatnaam = klant.Locatie.Straatnaam,
+                    Huisnummerlabel = klant.Locatie.Huisnummerlabel,
+                    Postcode = klant.Locatie.Postcode
+                }
+            };
+        }
+
+
+
 
         [Fact]
         public void RegistreerGebruiker_WithInvalidModel_ReturnsBadRequest()
@@ -82,48 +146,54 @@ namespace xUnitTestsReservatieBeheer
                 _controller.ModelState.AddModelError(validationResult.MemberNames.First(), validationResult.ErrorMessage);
             }
 
-            // Act
             var result = _controller.RegistreerGebruiker(_dummyGebruikerInvalidDto);
 
-            // Assert
             Assert.IsType<BadRequestObjectResult>(result);
         }
 
         [Fact]
         public void UpdateGebruiker_WithValidModel_ReturnsOk()
         {
-            // Arrange
+            var validGebruikerDto = new GebruikerDto
+            {
+                Naam = "Jan Jansen",
+                Email = "janjansen@example.com",
+                TelefoonNummer = "0123456789",
+                Locatie = new LocatieDto
+                {
+                    Gemeente = "Gent",
+                    Huisnummerlabel = "12B",
+                    Postcode = "9000",
+                    Straatnaam = "Hoofdstraat"
+                }
+            };
+
             int klantenNummer = 1;
             _controller.ModelState.Clear();
 
-            // Mock setup for an existing user
             var mockKlant = new Klant
             {
                 KlantenNummer = klantenNummer,
                 Naam = "Existing User",
                 Email = "existing@example.com",
                 TelefoonNummer = "0123456789",
-                Locatie = new Locatie() // Initialize Locatie fields if needed
+                Locatie = new Locatie()
             };
 
             mockRepo.Setup(repo => repo.GetKlantById(klantenNummer))
                     .Returns(mockKlant);
             mockRepo.Setup(repo => repo.UpdateKlant(It.IsAny<Klant>()))
-                    .Verifiable(); // Setup for UpdateKlant call
+                    .Verifiable();
 
-            // Act
-            var result = _controller.UpdateGebruiker(klantenNummer, _dummyGebruikerDto);
+            var result = _controller.UpdateGebruiker(klantenNummer, validGebruikerDto);
 
-            // Assert
             Assert.IsType<OkObjectResult>(result);
             mockRepo.Verify(repo => repo.UpdateKlant(It.IsAny<Klant>()), Times.Once());
         }
 
-
         [Fact]
         public void UpdateGebruiker_WithInvalidModel_ReturnsBadRequest()
         {
-            // Arrange
             int klantenNummer = 1;
             var validationContext = new ValidationContext(_dummyGebruikerInvalidDto);
             var validationResults = new List<ValidationResult>();
@@ -133,24 +203,34 @@ namespace xUnitTestsReservatieBeheer
                 _controller.ModelState.AddModelError(validationResult.MemberNames.First(), validationResult.ErrorMessage);
             }
 
-            // Act
             var result = _controller.UpdateGebruiker(klantenNummer, _dummyGebruikerInvalidDto);
 
-            // Assert
             Assert.IsType<BadRequestObjectResult>(result);
         }
 
         [Fact]
         public void UpdateGebruiker_WithNonExistingKlant_ReturnsNotFound()
         {
-            // Arrange
-            int klantenNummer = -1; // Non-existing klantenNummer
+            var validGebruikerDto = new GebruikerDto
+            {
+                Naam = "Jan Jansen",
+                Email = "janjansen@example.com",
+                TelefoonNummer = "0123456789",
+                Locatie = new LocatieDto
+                {
+                    Gemeente = "Gent",
+                    Huisnummerlabel = "12B",
+                    Postcode = "9000",
+                    Straatnaam = "Hoofdstraat"
+                }
+            };
+
+            int klantenNummer = -1;
+            mockRepo.Setup(repo => repo.GetKlantById(klantenNummer)).Returns((Klant)null);
             _controller.ModelState.Clear();
 
-            // Act
-            var result = _controller.UpdateGebruiker(klantenNummer, _dummyGebruikerDto);
+            var result = _controller.UpdateGebruiker(klantenNummer, validGebruikerDto);
 
-            // Assert
             Assert.IsType<NotFoundObjectResult>(result);
         }
 
@@ -175,27 +255,17 @@ namespace xUnitTestsReservatieBeheer
             mockRepo.Verify(repo => repo.UitschrijvenGebruiker(klantenNummer), Times.Once());
         }
 
-
-
         [Fact]
         public void UitschrijvenGebruiker_NonExistingKlant_ReturnsNotFound()
         {
-            // Arrange
-            int klantenNummer = -1; // Non-existing klantenNummer
+            int klantenNummer = -1;
 
-            // Mock setup for non-existing user
             mockRepo.Setup(repo => repo.GetKlantById(klantenNummer))
-                    .Returns<Klant>(null); // Simulating user not found
+                    .Returns<Klant>(null);
 
-            // Act
             var result = _controller.UitschrijvenGebruiker(klantenNummer);
 
-            // Assert
             Assert.IsType<NotFoundObjectResult>(result);
         }
-
-
-
     }
-
 }
